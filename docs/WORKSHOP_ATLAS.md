@@ -1,10 +1,13 @@
-# Workshop Atlas
+# The Workshop
 
-This document describes the core concepts of The Workshop.
+The Workshop is a kids first creative studio that teaches how to build things step by step with the help of AI.
 
-- Projects: things the child wants to make.
-- Steps: small units of progress inside a project.
-- Stations: virtual rooms where specific kinds of thinking happen.
-- Theme: the visual and narrative skin over the system.
+It is not a code editor and not a full developer environment.  
+Its primary purpose is to help children (and curious beginners) learn how to:
 
-The v0 theme is **Starship Shipyard**.
+- Shape ideas  
+- Break ideas into steps  
+- Test and question their creations  
+- Keep track of their projects over time  
+
+This repo will contain the design documents, prompts, and architecture for The Workshop.
