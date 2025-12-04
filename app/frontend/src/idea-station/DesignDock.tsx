@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { Project, Step } from '../domain/project';
 import { upsertProject } from '../storage/localProjectStore';
 
+type DesignDockProps = {
+  onSaved?: (projectId: string) => void;
+};
+
 const generateId = (prefix: string) => {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return (crypto as { randomUUID: () => string }).randomUUID();
@@ -29,7 +33,7 @@ const parseSteps = (stepsText: string, projectId: string): Step[] => {
     });
 };
 
-export const DesignDock: React.FC = () => {
+export const DesignDock: React.FC<DesignDockProps> = ({ onSaved }) => {
   const [projectId, setProjectId] = useState<string>('');
   const [projectName, setProjectName] = useState<string>('');
   const [audience, setAudience] = useState<string>('');
@@ -61,6 +65,9 @@ export const DesignDock: React.FC = () => {
     setProjectId(id);
     setCreatedAt(firstCreatedAt);
     setMessage('Project saved to local storage.');
+    if (onSaved) {
+      onSaved(id);
+    }
   };
 
   return (

@@ -1,0 +1,35 @@
+{
+  "task_name": "Test Station (Diagnostics Corridor) Implementation",
+  "steps": [
+    {
+      "description": "Enable navigation from Build Station to Test Station...",
+      "files": [
+        "app/frontend/src/App.tsx",
+        "app/frontend/src/build-station/AssemblyBay.tsx"
+      ]
+    },
+    {
+      "description": "Create the DiagnosticsCorridor component for the Test Station...",
+      "file": "app/frontend/src/test-station/DiagnosticsCorridor.tsx"
+    },
+    {
+      "description": "Implement interactive Q&A for testing in DiagnosticsCorridor...",
+      "file": "app/frontend/src/test-station/DiagnosticsCorridor.tsx"
+    },
+    {
+      "description": "Provide a way to conclude the test session and record results...",
+      "file": "app/frontend/src/test-station/DiagnosticsCorridor.tsx"
+    },
+    {
+      "description": "Verify safety and tone in the Test Station UI...",
+      "file": "app/frontend/src/test-station/DiagnosticsCorridor.tsx"
+    },
+    {
+      "description": "Document the Test Station feature and log the changes...",
+      "files": [
+        "docs/features/FEATURE-WS-0003.md",
+        "roadmap/CHANGELOG.md"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "task_name": "Build Station (Assembly Bay) Implementation",
+  "steps": [
+    {
+      "description": "Enable navigation from the Idea Station to the Build Station...",
+      "files": [
+        "app/frontend/src/App.tsx",
+        "app/frontend/src/idea-station/DesignDock.tsx"
+      ]
+    },
+    {
+      "description": "Create the Build Station UI component...",
+      "file": "app/frontend/src/build-station/AssemblyBay.tsx"
+    },
+    {
+      "description": "Implement step completion functionality in the AssemblyBay...",
+      "file": "app/frontend/src/build-station/AssemblyBay.tsx"
+    },
+    {
+      "description": "Integrate AI guidance for steps in AssemblyBay...",
+      "file": "app/frontend/src/build-station/AssemblyBay.tsx"
+    },
+    {
+      "description": "Ensure the Build Station\u2019s tone and safety compliance...",
+      "file": "app/frontend/src/build-station/AssemblyBay.tsx"
+    },
+    {
+      "description": "Document the Build Station feature and update the changelog...",
+      "files": [
+        "docs/features/FEATURE-WS-0002.md",
+        "roadmap/CHANGELOG.md"
+      ]
+    }
+  ]
+}
