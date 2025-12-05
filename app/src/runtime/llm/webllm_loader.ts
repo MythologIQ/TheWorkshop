@@ -2,7 +2,7 @@ import { getDefaultModel, findModel, ModelEntry } from './model_config';
 
 export type StreamChunk = { token: string; done: boolean };
 
-type GenerateOptions = {
+export type GenerateOptions = {
   maxTokens?: number;
   temperature?: number;
   systemPrompt?: string;
