@@ -1,10 +1,6 @@
 import React from 'react';
+import BuildStationPage from '../stations/build/BuildStationPage';
 
-const AssemblyBayPage: React.FC = () => (
-  <div className="p-4">
-    <h1 className="text-xl font-semibold">Assembly Bay</h1>
-    <p>Placeholder for Build Station UI.</p>
-  </div>
-);
+const AssemblyBayPage: React.FC = () => <BuildStationPage />;
 
 export default AssemblyBayPage;

@@ -13,11 +13,36 @@ export interface Goal {
   successPicture?: string;
 }
 
+// Idea Station slice follows the Creativity Boundary spec (docs/CREATIVITY_BOUNDARY_SPEC.md).
+export interface StationIdea {
+  title: string;
+  mission: string;
+  goal: string;
+  starterSteps: string[];
+}
+
+export type BuildStepStatus = 'todo' | 'active' | 'done';
+
+export interface BuildStep {
+  id: string;
+  text: string;
+  status: BuildStepStatus;
+  notes?: string;
+}
+
+export interface BuildSlice {
+  steps: BuildStep[];
+  activeStepId?: string | null;
+}
+
 export interface Project {
   id: string;
+  name?: string;
   title: string;
   description: string;
   goal?: Goal;
+  idea?: StationIdea;
+  build?: BuildSlice;
   status: ProjectStatus;
   currentStation: StationKey;
   steps: Step[];

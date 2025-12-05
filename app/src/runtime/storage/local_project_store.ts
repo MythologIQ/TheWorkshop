@@ -1,4 +1,4 @@
-import { Project, StationIdea } from '../../domain/project';
+import { Project, StationIdea, BuildSlice, BuildStep, BuildStepStatus } from '../../domain/project';
 import { newId } from '../../domain/id';
 
 const PROJECTS_KEY = 'workshop.projects';
@@ -10,6 +10,9 @@ const MAX_IDEA_MISSION = 400;
 const MAX_IDEA_GOAL = 200;
 const MAX_IDEA_STEPS = 3;
 const MAX_IDEA_STEP = 140;
+const MAX_BUILD_STEPS = 12;
+const MAX_BUILD_STEP_LENGTH = 180;
+const MAX_BUILD_NOTES = 300;
 
 const storageAvailable = (): boolean => typeof window !== 'undefined' && typeof localStorage !== 'undefined';
 
@@ -29,6 +32,39 @@ const clampIdea = (idea?: StationIdea): StationIdea | undefined => {
     mission: clampText(idea.mission, MAX_IDEA_MISSION) || '',
     goal: clampText(idea.goal, MAX_IDEA_GOAL) || '',
     starterSteps,
+  };
+};
+
+const clampBuildStatus = (status?: string): BuildStepStatus =>
+  status === 'active' ? 'active' : status === 'done' ? 'done' : 'todo';
+
+const clampBuildSlice = (build?: BuildSlice): BuildSlice | undefined => {
+  if (!build) return undefined;
+  const limited = (build.steps || []).slice(0, MAX_BUILD_STEPS);
+  const sanitized = limited
+    .map((step) => ({
+      id: step.id || newId('build-step'),
+      text: clampText(step.text, MAX_BUILD_STEP_LENGTH) || '',
+      status: clampBuildStatus(step.status),
+      notes: clampText(step.notes, MAX_BUILD_NOTES) || '',
+    }))
+    .filter((step) => step.text.length > 0);
+  if (sanitized.length === 0) return undefined;
+  const preferred =
+    sanitized.find((step) => step.id === build.activeStepId && step.status !== 'done') ??
+    sanitized.find((step) => step.status === 'active') ??
+    sanitized.find((step) => step.status === 'todo');
+  const activeStepId = preferred?.id ?? null;
+  const steps = sanitized.map((step) => {
+    if (step.status === 'done') return step;
+    if (step.id === activeStepId) {
+      return { ...step, status: 'active' };
+    }
+    return { ...step, status: 'todo' };
+  });
+  return {
+    steps,
+    activeStepId,
   };
 };
 
@@ -68,10 +104,12 @@ export const loadAllProjects = async (): Promise<Project[]> => {
 export const saveProject = async (project: Project): Promise<void> => {
   const projects = await loadAllProjects();
   const idea = clampIdea(project.idea);
+  const build = clampBuildSlice(project.build);
   const sanitized: Project = {
     ...project,
     name: clampText(project.name, MAX_PROJECT_TEXT) || 'Untitled Project',
     idea,
+    build,
   };
   const existingIndex = projects.findIndex((entry) => entry.id === sanitized.id);
   if (existingIndex >= 0) {
