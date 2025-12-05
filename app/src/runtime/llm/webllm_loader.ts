@@ -67,3 +67,13 @@ export const loadModel = async (modelId?: string): Promise<LoadedModel> => {
 
   return { model, generate };
 };
+
+export const generateStream = async function* (
+  prompt: string,
+  opts?: GenerateOptions,
+): AsyncGenerator<StreamChunk, void, unknown> {
+  const loader = await loadModel();
+  for await (const chunk of loader.generate(prompt, opts)) {
+    yield chunk;
+  }
+};
