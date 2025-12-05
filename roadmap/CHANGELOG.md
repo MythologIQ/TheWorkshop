@@ -11,3 +11,6 @@ All notable changes to this project will be documented here.
 - Added Build Station v1 prototype: local Assembly Bay UI with step completion, safe hints stub, navigation from Design Dock, and FEATURE-WS-0002 spec.
 - Added Test Station v1 prototype: Diagnostics Corridor UI with quick tests, reflections, optional fix-step creation, navigation from Build, and FEATURE-WS-0003 spec.
 - Added Memory Station v1 prototype: Stellar Archive UI for wins/lessons/reminders, memory StationState save, navigation from Test/Build, and FEATURE-WS-0004 spec.
+- Added Reflect Station v1 spec and prompt (Orbiter Bridge), extended station enums to include "reflect", and recorded FEATURE-WS-0005.
+- Added Share Station (Broadcast Deck) spec and prompt, extended station enums to include "share", FEATURE-WS-0006 logged.
+- Added Replay Station (Time Tunnels) spec and prompt, extended station enums to include "replay", FEATURE-WS-0007 logged.

@@ -1,0 +1,36 @@
+{
+  "task_name": "Replay Station (Time Tunnels)",
+  "steps": [
+    {
+      "description": "Author the Replay Station specification document (Time Tunnels). Cover the Purpose (rewinding through idea states to recover or remix past versions), Role in the loop (Ask which past state to visit, Reflect on what was different, Plan options to restore or branch, Act by retrieving/merging content, Review what was learned from the comparison), Inputs (saved project snapshots, memory logs, user selection of timeframe), Outputs (restored content or a new branch of the project), User experience (like a holographic time corridor), and Safety behavior (no blame or regret).",
+      "targets": [
+        "docs/stations/REPLAY_STATION.md"
+      ]
+    },
+    {
+      "description": "Create the Time Tunnels system prompt file for the Replay Station persona. In this prompt, explain that the station can travel through the project's timeline to retrieve past ideas. Include guidelines from the Safety Contract: maintain a calm, reassuring tone (so the child doesn\u2019t feel bad about backtracking), avoid any blame for past mistakes, and redirect any unsafe or impossible \"time travel\" requests gently. The prompt should outline the station\u2019s process (confirm the time range, display prior content, and offer next steps).",
+      "targets": [
+        "prompts/stations/replay_station_system.txt"
+      ]
+    },
+    {
+      "description": "Register the new Replay Station in the system. Add \"replay\" to the StationKey enum definition and update related structures so that Time Tunnels is recognized as a station with its own state. Update the data model docs accordingly, listing 'replay' among station keys and noting its function of revisiting past work.",
+      "targets": [
+        "app/frontend/src/domain/project.ts",
+        "docs/DATA_MODEL.md"
+      ]
+    },
+    {
+      "description": "Add a feature specification file for Replay Station (FEATURE-WS-0007). Summarize the Time Tunnels feature, including scope (project version history navigation), user type (primarily kid-facing), and acceptance criteria such as: the station can display or retrieve prior versions of project content, and it handles merging or replacing content safely without data loss. Include any limitations (e.g. read-only history view vs. actual branching) and links to related Memory Station integration.",
+      "targets": [
+        "docs/features/FEATURE-WS-0007.md"
+      ]
+    },
+    {
+      "description": "Record the addition of the Replay Station in the CHANGELOG. Add a new entry (with the date) for FEATURE-WS-0007 describing that Time Tunnels was introduced, enabling timeline rewind and version recovery for projects (leveraging stored snapshots from the Stellar Archive).",
+      "targets": [
+        "roadmap/CHANGELOG.md"
+      ]
+    }
+  ]
+}

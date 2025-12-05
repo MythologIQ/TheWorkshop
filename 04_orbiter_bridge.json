@@ -1,0 +1,36 @@
+{
+  "task_name": "Reflect Station (Orbiter Bridge)",
+  "steps": [
+    {
+      "description": "Draft the Reflect Station spec document with all required sections (Purpose, Role in the learning loop, Inputs, Outputs, User experience, Safety behavior, Example dialogue). Emphasize how Orbiter Bridge helps identify patterns, mark breakthroughs vs. confusions, and ask what was learned about oneself.",
+      "targets": [
+        "docs/stations/REFLECT_STATION.md"
+      ]
+    },
+    {
+      "description": "Create the Orbiter Bridge system prompt file defining the Reflect Station persona. Include its role (noticing patterns and prompting personal insights) and Safety Contract reminders (kind tone, minimal personal details, truth over \"coolness\", gentle redirection of harmful topics). Ensure the prompt explicitly follows the Ask-Reflect-Plan-Act-Review cycle with a focus on Reflect/Review steps.",
+      "targets": [
+        "prompts/stations/reflect_station_system.txt"
+      ]
+    },
+    {
+      "description": "Extend the data model to register the new Reflect Station. Add \"reflect\" to the StationKey enum in the project domain model and update any station mappings. Also update documentation to include the Reflect Station in the list of station keys and descriptions.",
+      "targets": [
+        "app/frontend/src/domain/project.ts",
+        "docs/DATA_MODEL.md"
+      ]
+    },
+    {
+      "description": "Add a feature spec file for Reflect Station. Follow the feature template to summarize the Orbiter Bridge (feature ID FEATURE-WS-0005) including its scope (inspiring meta-cognition), affected user types, and acceptance criteria (e.g. station provides reflection prompts, tags moments, adheres to Safety Contract and pedagogy loop).",
+      "targets": [
+        "docs/features/FEATURE-WS-0005.md"
+      ]
+    },
+    {
+      "description": "Log the addition of Reflect Station in the changelog. Include an entry with the current date and a brief note that FEATURE-WS-0005 (Reflect Station v1) was added, introducing the Orbiter Bridge with its focus on tagging breakthroughs & confusions and personal learning insights.",
+      "targets": [
+        "roadmap/CHANGELOG.md"
+      ]
+    }
+  ]
+}

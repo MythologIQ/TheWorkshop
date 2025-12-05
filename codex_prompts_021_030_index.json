@@ -1,0 +1,146 @@
+[
+  {
+    "sequence": "021",
+    "id": "WS-CODEX-021",
+    "phase": "Post-v1 Enhancements \u2013 Accessibility & Internationalization",
+    "title": "Implement core accessibility improvements and lay groundwork for future localization.",
+    "summary": "Improve accessibility across primary screens and introduce a minimal i18n spine for future localization.",
+    "instructions": "You are extending The Workshop beyond v1, focusing on accessibility and early internationalization support.\n\nGoal for this task:\nMake the UI more accessible to a wider range of users and prepare the codebase for future language packs, without actually translating all content yet.\n\nPerform these steps:\n\n1) Accessibility audit\n   - Add a simple, repeatable accessibility checklist doc at docs/ACCESSIBILITY_CHECKLIST.md.\n   - Review all primary pages (project selection and all Stations) for:\n     - Keyboard navigation coverage for interactive elements.\n     - Clear focus states.\n     - Sufficient color contrast for text and key icons.\n     - Appropriate ARIA labels for complex controls (tabs, dialogs, navigation).\n\n2) Code changes for accessibility\n   - Update components to ensure:\n     - All interactive elements are reachable by keyboard and have visible focus outlines.\n     - Semantically appropriate HTML elements are used (buttons, headings, lists, nav, main, etc.).\n     - ARIA attributes are added only where native semantics are not sufficient.\n   - Fix any obvious contrast issues while still respecting the Workshop palette.\n\n3) Internationalization scaffolding\n   - Introduce a minimal i18n setup (for example a simple key/value dictionary approach) under app/src/i18n/.\n   - Define a small set of keys for core strings:\n     - Navigation labels.\n     - Station names.\n     - Major headings and CTAs.\n   - Replace hardcoded strings in layout and nav components with lookups from this dictionary.\n   - Keep English as the only fully supported language for now, but design the API to allow additional languages later.\n\n4) Preferences\n   - Add a simple Settings panel or modal where:\n     - The user can select a language (for now, only English is functional).\n     - Accessibility hints (for example 'show extra labels' or 'larger base font') can be toggled.\n   - Store these preferences in local storage and apply them on load.\n\nDo not attempt to localize every string in the app yet. Focus on the spine (layout, navigation, headings) and making accessibility improvements concrete and repeatable.",
+    "acceptance_criteria": [
+      "docs/ACCESSIBILITY_CHECKLIST.md exists and describes a repeatable audit for Workshop screens.",
+      "Keyboard navigation, focus states, and semantic HTML are improved across primary pages.",
+      "An i18n scaffolding module exists, and core layout/nav strings are loaded via dictionary keys.",
+      "A Settings surface allows choosing a language (currently English) and simple accessibility options, persisted between sessions."
+    ]
+  },
+  {
+    "sequence": "022",
+    "id": "WS-CODEX-022",
+    "phase": "Post-v1 Enhancements \u2013 Guided Tutorial Missions",
+    "title": "Add a guided tutorial experience that walks a first-time user through building their first project.",
+    "summary": "Implement a mission-style guided flow that overlays hints and progress steps across Stations for a first project.",
+    "instructions": "You are adding a guided tutorial system to help kids complete their first project in The Workshop.\n\nGoal for this task:\nImplement a mission-style guided flow that overlays hints and progress steps on top of the existing Stations, without locking the UI down too tightly.\n\nPerform these steps:\n\n1) Tutorial domain model\n   - Create app/src/domain/tutorial.ts defining:\n     - TutorialId type (for example 'first_project_robot_dog').\n     - Step type containing:\n       - id, title, description, targetStationKey, and optional targetElementId or hintPlacement.\n     - TutorialState type with:\n       - activeTutorialId, currentStepIndex, completedAt (optional).\n\n2) Tutorial store\n   - Create app/src/runtime/store/tutorialStore.ts:\n     - Manage active tutorial state and progress.\n     - Save tutorial progress to local storage (per user/device).\n     - Expose methods:\n       - startTutorial(id), nextStep(), prevStep(), completeTutorial(), resetTutorial(id).\n\n3) Tutorial overlay UI\n   - Implement a TutorialOverlay component under app/src/ui/tutorial/ that:\n     - Observes tutorialStore.\n     - Displays current step info: title, description, and what Station the user should visit.\n     - Optionally highlights a target element (if targetElementId is available) or the Station in nav.\n     - Provides Next/Back/Skip/Done controls.\n\n4) First mission: Robot Dog Comic\n   - Define a tutorial configuration for a simple default mission (for example Robot Dog Comic from the Atlas examples):\n     - Steps that move through: Idea \u2192 Build \u2192 Test \u2192 Memory \u2192 Share.\n     - Simple instructions at each step that map to actions the child can realistically take.\n   - Hook this tutorial to a prominent 'Try a Guided Mission' button on the project selection or landing screen.\n\n5) Boundaries and tone\n   - Ensure tutorial hints are short, encouraging, and non-judgmental.\n   - Allow users to exit the tutorial at any time without losing their project data.\n\nDo not create a full mission editor yet. Focus on the data structures, store, overlay, and a single guided path.",
+    "acceptance_criteria": [
+      "A tutorial domain model exists with TutorialId, Step, and TutorialState types.",
+      "tutorialStore manages active tutorial progress and persists it to local storage.",
+      "A TutorialOverlay component can show current step info and navigation controls, reacting to tutorialStore.",
+      "A 'Robot Dog Comic' style tutorial is available and can guide a user through Stations from project start to share.",
+      "Users can exit the tutorial at any time without losing project data."
+    ]
+  },
+  {
+    "sequence": "023",
+    "id": "WS-CODEX-023",
+    "phase": "Post-v1 Enhancements \u2013 Theme Variants",
+    "title": "Introduce theme variants (Starship, Dwarven Forge, Wizard Tower) without changing mechanics.",
+    "summary": "Add a theme system so the visual layer can swap between multiple skins while the mechanics stay identical.",
+    "instructions": "You are expanding The Workshop to support multiple visual themes while keeping the same underlying mechanics, data, and safety rules.\n\nGoal for this task:\nImplement a theme system that can switch between Starship Shipyard, Dwarven Forge, and Wizard Tower skins, without breaking Station logic.\n\nPerform these steps:\n\n1) Theme domain model\n   - Create app/src/domain/theme.ts defining:\n     - ThemeId type: 'starship', 'forge', 'tower'.\n     - ThemeConfig type with:\n       - id, displayName, palette, iconSetIds, backgroundAssetIds, stationLabelOverrides (if needed).\n   - Define at least three theme configs, mapping to existing or planned assets.\n\n2) Theme store\n   - Create app/src/runtime/store/themeStore.ts with:\n     - getTheme(), setTheme(id: ThemeId), subscribe(listener).\n     - Persist the selected ThemeId to local storage and load it on startup.\n\n3) Theme-driven UI wiring\n   - Update layout components (ShellLayout, StationNav, TopBar, BackgroundCanvas) to read the active ThemeConfig.\n   - Apply theme properties such as:\n     - Color palette tokens (mapped to Tailwind classes where possible).\n     - Icon file names or identifiers for Stations.\n     - Background image asset names.\n   - Avoid hardcoding theme-specific visuals outside of this configuration layer.\n\n4) Theme selection UI\n   - Add a theme picker to the Settings surface or a dedicated 'Workshop Skins' panel.\n   - Represent each theme with a small preview card and clear label (for example: 'Starship Shipyard', 'Dwarven Forge', 'Wizard Tower').\n   - Ensure changes are applied live and persisted.\n\n5) Safety and copy\n   - Confirm that theme changes do not alter the Safety Contract, Station behavior, or core copy around rules.\n   - Theme is presentation only; all mechanics and constraints remain identical.\n\nDo not over-design theme art here; focus on the configuration system and wiring. The actual visual assets can be improved over time.",
+    "acceptance_criteria": [
+      "ThemeId and ThemeConfig types exist with configurations for 'starship', 'forge', and 'tower'.",
+      "themeStore manages the active theme and persists it across sessions.",
+      "Layout and core UI components use ThemeConfig data instead of hardcoded visuals.",
+      "A theme picker UI exists, and switching themes updates visuals without breaking functionality or rules."
+    ]
+  },
+  {
+    "sequence": "024",
+    "id": "WS-CODEX-024",
+    "phase": "Post-v1 Enhancements \u2013 Model Selector and Performance Modes",
+    "title": "Expose WebLLM model selector and performance modes for advanced users.",
+    "summary": "Let adults choose between different WebLLM models and performance modes while keeping kid-safe defaults.",
+    "instructions": "You are adding control over the WebLLM model and runtime behavior, primarily for adults or advanced users, while maintaining safe defaults for kids.\n\nGoal for this task:\nImplement a simple model selector and performance mode configuration that can tune responsiveness and quality, with guardrails.\n\nPerform these steps:\n\n1) Model configuration\n   - Create app/src/runtime/llm/model_config.ts with:\n     - Known model entries (matching the MODEL_CATALOG): small, medium, tiny options.\n     - Metadata for each model: name, approximate RAM usage, relative speed score.\n   - Define a ModelChoice type and a PerformanceMode type (for example: 'fast', 'balanced', 'detailed').\n\n2) LLM settings store\n   - Create app/src/runtime/store/llmSettingsStore.ts that manages:\n     - selectedModelId (default to the smallest safe model).\n     - performanceMode.\n     - maximumTokensPerCall, adjusted based on performanceMode.\n   - Persist these settings to local storage and load them at startup.\n\n3) Integrate with WebLLM loader\n   - Update webllm_loader.ts to respect the selectedModelId and performance parameters.\n   - When the model is changed, handle reinitialization or worker recreation gracefully.\n   - Provide clear comments about the tradeoffs between models.\n\n4) Settings UI\n   - Extend the Settings surface with an 'Advanced AI Settings' section (calm copy, behind an 'Adults / advanced users only' affordance if possible).\n   - Surface:\n     - Model selector (with descriptions in plain language).\n     - Performance mode toggle (fast, balanced, detailed).\n\n5) Safety and limits\n   - Ensure that increasing model size does not change SafetyContract enforcement.\n   - Hard cap maximumTokensPerCall even in 'detailed' mode to maintain responsiveness and avoid overwhelming kids.\n\nDo not introduce cloud-based models here; stay within the local WebLLM boundary.",
+    "acceptance_criteria": [
+      "model_config.ts describes the available WebLLM models with metadata.",
+      "llmSettingsStore exists and persists selected model and performance mode.",
+      "webllm_loader.ts uses llmSettingsStore to choose models and token limits.",
+      "Settings UI exposes model and performance choices in a safe, clear way.",
+      "Safety behavior and token caps remain enforced regardless of model size."
+    ]
+  },
+  {
+    "sequence": "025",
+    "id": "WS-CODEX-025",
+    "phase": "Post-v1 Enhancements \u2013 Project Import/Export",
+    "title": "Allow projects to be exported and imported as portable JSON files.",
+    "summary": "Implement project import/export as .workshop.json files for backup and device transfer.",
+    "instructions": "You are implementing project import/export so that kids (and adults) can move their creations between devices or back them up, while preserving safety and simplicity.\n\nGoal for this task:\nProvide a simple export/import flow using JSON files that represent one project, without exposing sensitive data.\n\nPerform these steps:\n\n1) Export format\n   - Define a stable JSON structure for a project export in docs/PROJECT_EXPORT_FORMAT.md.\n   - Include:\n     - A schema version.\n     - Project core fields (id, name, timestamps).\n     - Station slices (idea, build, test, memory, reflect, share, snapshots).\n   - Exclude or anonymize:\n     - Any device-specific or internal-only IDs that are not needed to reconstruct the project meaningfully.\n\n2) Export implementation\n   - Add an exportProject(projectId) helper under app/src/runtime/export/export_project.ts that:\n     - Loads the project.\n     - Converts it to the export format.\n     - Triggers a download of a .workshop.json file (or returns the blob to the caller).\n\n3) Import implementation\n   - Add an importProject(file) helper under app/src/runtime/export/import_project.ts that:\n     - Reads and parses the JSON file.\n     - Validates the schema version and key fields.\n     - Adapts or migrates data if needed.\n     - Creates a new Project entry in projectStore (with a new local ID if appropriate).\n   - Handle errors gracefully and surface a friendly message if the file is invalid.\n\n4) UI integration\n   - Add Import and Export controls in a safe place (for example on the ProjectSelectionPage or in a 'Project tools' panel).\n   - Make the copy clear:\n     - Export: 'Save a copy of this project to a file'.\n     - Import: 'Open a project file from this device'.\n\n5) Safety considerations\n   - Remind the user that exported files may still contain creative content that they might not want to share widely.\n   - Encourage storing them with a trusted adult when appropriate.\n\nDo not implement cloud sync here; this task is strictly about local file import and export.",
+    "acceptance_criteria": [
+      "docs/PROJECT_EXPORT_FORMAT.md defines a clear JSON export schema with versioning.",
+      "exportProject helper can save a single project into a .workshop.json file.",
+      "importProject helper can load a .workshop.json file, validate it, and create a new Project.",
+      "UI controls exist to export and import projects from an obvious location.",
+      "Errors in import are handled kindly and do not break the app."
+    ]
+  },
+  {
+    "sequence": "026",
+    "id": "WS-CODEX-026",
+    "phase": "Post-v1 Enhancements \u2013 Local Telemetry and Diagnostics",
+    "title": "Add local-only telemetry and diagnostics panel (offline, privacy-respecting).",
+    "summary": "Track simple usage metrics locally and surface them in a diagnostics panel, with clear opt-in/out.",
+    "instructions": "You are implementing a local-only telemetry and diagnostics view to help adults or developers understand usage patterns, while remaining fully offline and privacy-respecting.\n\nGoal for this task:\nTrack simple, anonymous usage metrics locally and surface them in a diagnostics panel, with clear opt-in and opt-out.\n\nPerform these steps:\n\n1) Telemetry model\n   - Create app/src/domain/telemetry.ts defining:\n     - Metrics such as:\n       - totalProjectsCreated\n       - totalSessions\n       - stationVisitCounts (by stationKey)\n       - completedTutorials\n     - TelemetryState type that stores these counts.\n\n2) Telemetry store\n   - Create app/src/runtime/store/telemetryStore.ts that:\n     - Loads TelemetryState from local storage.\n     - Increments metrics based on events (project created, station visited, tutorial completed, etc.).\n     - Exposes subscribe(listener) for UI components.\n\n3) Event hooks\n   - Identify key locations (project creation, station navigation, tutorial completion) and fire telemetry events from there.\n   - Ensure these events are simple and do not leak sensitive content (only counts and timestamps).\n\n4) Diagnostics panel UI\n   - Implement a DiagnosticsPage or panel under app/src/pages/DiagnosticsPage.tsx:\n     - Shows high-level metrics in a simple, understandable way.\n     - Includes a clear statement that data never leaves the device.\n     - Provides buttons to:\n       - Reset metrics.\n       - Toggle telemetry collection on or off.\n   - Save the telemetry enabled/disabled flag in local storage.\n\n5) Privacy guarantees\n   - Confirm that no telemetry data is ever sent across the network.\n   - Add a short section to docs/PRIVACY_NOTES.md describing how telemetry works.\n\nDo not implement any remote logging or analytics in this task; keep everything offline and transparent.",
+    "acceptance_criteria": [
+      "TelemetryState and telemetryStore exist and track basic usage counts per station and project.",
+      "Key actions (project creation, station navigation, tutorial completion) increment telemetry in a minimal way.",
+      "A diagnostics UI shows metrics and lets the user reset or disable telemetry.",
+      "Telemetry storage is local-only and documented, with no network calls added for analytics."
+    ]
+  },
+  {
+    "sequence": "027",
+    "id": "WS-CODEX-027",
+    "phase": "Post-v1 Enhancements \u2013 Automated Tests and CI",
+    "title": "Add automated tests and a basic CI configuration to prevent regressions.",
+    "summary": "Introduce a foundational test suite and CI workflow that runs linting and tests on each change.",
+    "instructions": "You are strengthening The Workshop's reliability by adding automated tests and a basic continuous integration (CI) configuration.\n\nGoal for this task:\nAdd a foundational test suite and CI config that runs linting and tests on each change or pull request.\n\nPerform these steps:\n\n1) Testing setup\n   - Choose a testing stack consistent with the current toolchain (for example Vitest + React Testing Library).\n   - Configure:\n     - Unit tests for domain and stores.\n     - Component tests for at least a few key screens (ProjectSelectionPage, IdeaStationPage).\n\n2) Test coverage\n   - Add tests that cover:\n     - projectStore basic flows (create, update, persist, reload).\n     - AIProvider prompt-building logic (without actually running WebLLM).\n     - Navigation flows between Stations (router + StationNav interactions).\n\n3) Scripts\n   - Add npm scripts to package.json:\n     - test\n     - test:watch\n     - lint\n   - Ensure existing build scripts still work.\n\n4) CI configuration\n   - Create a basic CI config (for example .github/workflows/ci.yml) that:\n     - Runs on pushes and pull requests to main and feature branches.\n     - Installs dependencies.\n     - Runs lint and test scripts.\n     - Fails the build on errors.\n\n5) Documentation\n   - Add a section to docs/CONTRIBUTING.md explaining how to run tests locally and what the minimal expectations are for new contributions.\n\nDo not aim for 100% coverage in this task. Focus on setting up a solid foundation and covering core behavior.",
+    "acceptance_criteria": [
+      "A testing stack (such as Vitest + React Testing Library) is configured and can run via npm test.",
+      "There are tests for projectStore, AIProvider prompt building, and basic navigation.",
+      "CI config exists (for example in .github/workflows/ci.yml) that runs lint and tests on push/PR.",
+      "CONTRIBUTING.md documents how to run tests and the expectation for new code."
+    ]
+  },
+  {
+    "sequence": "028",
+    "id": "WS-CODEX-028",
+    "phase": "Post-v1 Enhancements \u2013 Developer and Extension Documentation",
+    "title": "Document architecture, station lifecycle, and extension points for contributors.",
+    "summary": "Create architecture, lifecycle, and extension docs so future maintainers can extend the Workshop safely.",
+    "instructions": "You are making The Workshop more approachable for future contributors and extension builders.\n\nGoal for this task:\nProvide clear architecture and extension documentation that explains how Stations, stores, and runtime pieces fit together.\n\nPerform these steps:\n\n1) Architecture overview\n   - Create docs/ARCHITECTURE_OVERVIEW.md describing:\n     - High-level module map (runtime, domain, stores, ui, stations).\n     - Data flow from user input \u2192 store \u2192 station \u2192 AI \u2192 store \u2192 UI.\n     - Where safety and creativity boundaries are enforced.\n\n2) Station lifecycle\n   - Create docs/STATION_LIFECYCLE.md that explains:\n     - How a station is defined (types, store usage, route, UI component).\n     - How to add a new Station (step-by-step checklists).\n     - How to integrate with AIProvider and projectStore safely.\n\n3) Extension points\n   - Create docs/EXTENSION_POINTS.md describing sanctioned places to extend the system, such as:\n     - Adding new Stations or sub-panels.\n     - Adding new tutorials.\n     - Adding new themes.\n\n4) Update contributor docs\n   - Update docs/CONTRIBUTING.md or add a separate docs/DEVELOPER_SETUP.md with:\n     - Setup steps (cloning, installing dependencies, running dev server).\n     - Reference to the architecture docs.\n\nKeep these documents high-level but precise enough to avoid guesswork for future maintainers.",
+    "acceptance_criteria": [
+      "ARCHITECTURE_OVERVIEW.md explains the major modules and data flow.",
+      "STATION_LIFECYCLE.md describes how stations are structured and extended safely.",
+      "EXTENSION_POINTS.md identifies specific sanctioned extension areas.",
+      "Contributor/developer docs reference the new architecture and lifecycle docs."
+    ]
+  },
+  {
+    "sequence": "029",
+    "id": "WS-CODEX-029",
+    "phase": "Post-v1 Enhancements \u2013 Content Packs and Templates",
+    "title": "Add support for project templates and content packs as starting points.",
+    "summary": "Define template and content pack structures, plus UI to start new projects from templates.",
+    "instructions": "You are adding reusable content packs and project templates so kids can start from structured examples instead of always from scratch.\n\nGoal for this task:\nImplement a way to define and load project templates, grouped into content packs, without changing safety rules.\n\nPerform these steps:\n\n1) Template model\n   - Create app/src/domain/templates.ts defining:\n     - TemplateId and ContentPackId types.\n     - Template structure with:\n       - id, packId, displayName, description, recommendedStations, and a partial Project payload (idea/build/memory etc).\n\n2) Template registry\n   - Create a registry of built-in templates under app/src/data/templates_builtin.ts.\n   - Include a few simple ones such as:\n     - Robot Dog Comic.\n     - Tiny Game Concept.\n     - Science Experiment Log (hypothetical).\n\n3) Applying templates\n   - Implement a helper applyTemplate(templateId) that:\n     - Creates a new Project using the template\u2019s partial Project data.\n     - Ensures IDs are regenerated where necessary.\n     - Respects Creativity Boundary limits.\n\n4) UI integration\n   - On the ProjectSelectionPage or a new 'Start from a template' panel, surface available templates with cards.\n   - Allow starting a new Project from a chosen template in one click.\n\n5) Future content packs\n   - Document in docs/CONTENT_PACKS.md how additional packs could be defined (for example by dropping new JSON files into a directory).\n\nDo not implement dynamic loading of external packs yet. Focus on the structure, registry, and template application flow.",
+    "acceptance_criteria": [
+      "Template and content pack types exist in domain/templates.ts.",
+      "A built-in template registry defines at least a few starter templates.",
+      "applyTemplate creates a new Project using template data with fresh IDs.",
+      "The UI exposes templates as starting options when creating a project.",
+      "CONTENT_PACKS.md describes how additional packs could be defined later."
+    ]
+  },
+  {
+    "sequence": "030",
+    "id": "WS-CODEX-030",
+    "phase": "Post-v1 Enhancements \u2013 Packaging and Offline Distribution",
+    "title": "Prepare build outputs and docs for offline-friendly distribution.",
+    "summary": "Define offline/PWA build profiles and deployment guide for local or limited-connectivity environments.",
+    "instructions": "You are preparing The Workshop for distribution in environments where internet access may be limited or tightly controlled.\n\nGoal for this task:\nDefine build outputs and documentation that support offline use, whether served from a local network or installed as a PWA/packaged app.\n\nPerform these steps:\n\n1) Build profiles\n   - Update build configuration (Vite and package.json scripts) to create at least:\n     - A standard web build.\n     - An offline-focused build profile (for example with a Service Worker or PWA manifest).\n\n2) PWA / offline support\n   - Add a simple manifest.json and, if appropriate, a Service Worker that:\n     - Caches the core application shell and static assets (JS, CSS, icons, backgrounds).\n     - Does not attempt to cache model binaries beyond what WebLLM already manages.\n\n3) Hosting and install docs\n   - Create docs/DEPLOYMENT_GUIDE.md describing:\n     - How to run The Workshop on a local machine (npm scripts).\n     - How to host a static build on a local network or intranet server.\n     - How to install it as a PWA in browsers that support it.\n\n4) Safety in offline mode\n   - Confirm that offline usage does not bypass SafetyContract enforcement or model constraints.\n   - Note any differences or limitations in offline mode in the deployment guide.\n\n5) Build verification\n   - Add a simple checklist to DEPLOYMENT_GUIDE.md for verifying a build:\n     - App loads without network once cached.\n     - WebLLM model can still be loaded from local asset paths.\n\nDo not implement native desktop packaging in this task; focus on robust web/PWA-style offline usage.",
+    "acceptance_criteria": [
+      "Build scripts support both standard and offline/PWA-oriented outputs.",
+      "A manifest and optional Service Worker exist to support caching the app shell.",
+      "DEPLOYMENT_GUIDE.md describes local, network-hosted, and PWA-style usage.",
+      "Safety behavior remains identical in offline-friendly builds."
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "sequence": "029",
+  "id": "WS-CODEX-029",
+  "phase": "Post-v1 Enhancements \u2013 Content Packs and Templates",
+  "title": "Add support for project templates and content packs as starting points.",
+  "summary": "Define template and content pack structures, plus UI to start new projects from templates.",
+  "instructions": "You are adding reusable content packs and project templates so kids can start from structured examples instead of always from scratch.\n\nGoal for this task:\nImplement a way to define and load project templates, grouped into content packs, without changing safety rules.\n\nPerform these steps:\n\n1) Template model\n   - Create app/src/domain/templates.ts defining:\n     - TemplateId and ContentPackId types.\n     - Template structure with:\n       - id, packId, displayName, description, recommendedStations, and a partial Project payload (idea/build/memory etc).\n\n2) Template registry\n   - Create a registry of built-in templates under app/src/data/templates_builtin.ts.\n   - Include a few simple ones such as:\n     - Robot Dog Comic.\n     - Tiny Game Concept.\n     - Science Experiment Log (hypothetical).\n\n3) Applying templates\n   - Implement a helper applyTemplate(templateId) that:\n     - Creates a new Project using the template\u2019s partial Project data.\n     - Ensures IDs are regenerated where necessary.\n     - Respects Creativity Boundary limits.\n\n4) UI integration\n   - On the ProjectSelectionPage or a new 'Start from a template' panel, surface available templates with cards.\n   - Allow starting a new Project from a chosen template in one click.\n\n5) Future content packs\n   - Document in docs/CONTENT_PACKS.md how additional packs could be defined (for example by dropping new JSON files into a directory).\n\nDo not implement dynamic loading of external packs yet. Focus on the structure, registry, and template application flow.",
+  "acceptance_criteria": [
+    "Template and content pack types exist in domain/templates.ts.",
+    "A built-in template registry defines at least a few starter templates.",
+    "applyTemplate creates a new Project using template data with fresh IDs.",
+    "The UI exposes templates as starting options when creating a project.",
+    "CONTENT_PACKS.md describes how additional packs could be defined later."
+  ]
+}

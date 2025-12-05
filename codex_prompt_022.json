@@ -1,0 +1,15 @@
+{
+  "sequence": "022",
+  "id": "WS-CODEX-022",
+  "phase": "Post-v1 Enhancements \u2013 Guided Tutorial Missions",
+  "title": "Add a guided tutorial experience that walks a first-time user through building their first project.",
+  "summary": "Implement a mission-style guided flow that overlays hints and progress steps across Stations for a first project.",
+  "instructions": "You are adding a guided tutorial system to help kids complete their first project in The Workshop.\n\nGoal for this task:\nImplement a mission-style guided flow that overlays hints and progress steps on top of the existing Stations, without locking the UI down too tightly.\n\nPerform these steps:\n\n1) Tutorial domain model\n   - Create app/src/domain/tutorial.ts defining:\n     - TutorialId type (for example 'first_project_robot_dog').\n     - Step type containing:\n       - id, title, description, targetStationKey, and optional targetElementId or hintPlacement.\n     - TutorialState type with:\n       - activeTutorialId, currentStepIndex, completedAt (optional).\n\n2) Tutorial store\n   - Create app/src/runtime/store/tutorialStore.ts:\n     - Manage active tutorial state and progress.\n     - Save tutorial progress to local storage (per user/device).\n     - Expose methods:\n       - startTutorial(id), nextStep(), prevStep(), completeTutorial(), resetTutorial(id).\n\n3) Tutorial overlay UI\n   - Implement a TutorialOverlay component under app/src/ui/tutorial/ that:\n     - Observes tutorialStore.\n     - Displays current step info: title, description, and what Station the user should visit.\n     - Optionally highlights a target element (if targetElementId is available) or the Station in nav.\n     - Provides Next/Back/Skip/Done controls.\n\n4) First mission: Robot Dog Comic\n   - Define a tutorial configuration for a simple default mission (for example Robot Dog Comic from the Atlas examples):\n     - Steps that move through: Idea \u2192 Build \u2192 Test \u2192 Memory \u2192 Share.\n     - Simple instructions at each step that map to actions the child can realistically take.\n   - Hook this tutorial to a prominent 'Try a Guided Mission' button on the project selection or landing screen.\n\n5) Boundaries and tone\n   - Ensure tutorial hints are short, encouraging, and non-judgmental.\n   - Allow users to exit the tutorial at any time without losing their project data.\n\nDo not create a full mission editor yet. Focus on the data structures, store, overlay, and a single guided path.",
+  "acceptance_criteria": [
+    "A tutorial domain model exists with TutorialId, Step, and TutorialState types.",
+    "tutorialStore manages active tutorial progress and persists it to local storage.",
+    "A TutorialOverlay component can show current step info and navigation controls, reacting to tutorialStore.",
+    "A 'Robot Dog Comic' style tutorial is available and can guide a user through Stations from project start to share.",
+    "Users can exit the tutorial at any time without losing project data."
+  ]
+}

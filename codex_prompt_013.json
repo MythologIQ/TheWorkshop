@@ -1,0 +1,15 @@
+{
+  "sequence": 13,
+  "id": "WS-CODEX-013",
+  "phase": "Phase 1 \u2013 Core framework",
+  "title": "Implement projectStore and connect it to local storage",
+  "summary": "Replace the placeholder projectStore with a typed store that manages Project state, persists to local storage, and supports selection and subscription.",
+  "instructions": "You are building the core projectStore for The Workshop.\n\nGoal for this task:\nImplement a typed projectStore that manages all Project entities in memory, persists them via the local storage adapter, and exposes a subscription API for React components.\n\nPerform these steps:\n\n1) Locate or create projectStore\n   - Find the existing projectStore implementation (likely under app/src/runtime/store or similar).\n   - If it is only a simple event bus placeholder, plan to replace it with a stronger typed store.\n   - If no file exists, create app/src/runtime/store/projectStore.ts.\n\n2) Define in-memory state\n   - Maintain:\n     - A map of id -> Project.\n     - An optional selectedProjectId string.\n   - Initialize state by calling loadAllProjects() from local_project_store.ts.\n\n3) Public API shape\n   - Implement and export functions or an object with methods:\n     - getProjects(): Project[]\n     - getProject(id: string): Project | undefined\n     - getSelectedProject(): Project | undefined\n     - createProject(name: string): Project\n     - updateProject(id: string, patch: Partial<Project>): Project | undefined\n     - selectProject(id: string | null): void\n     - subscribe(listener: () => void): () => void  // returns unsubscribe\n\n4) Persistence behavior\n   - Whenever createProject or updateProject changes the state:\n     - Update the in-memory map and updatedAt timestamp.\n     - Call saveProject(project) for the affected project.\n     - Optionally also refresh the full list saved in local storage if needed.\n   - Ensure operations are resilient to storage errors (log, but do not crash the app).\n\n5) Respect creativity boundaries\n   - Before persisting, enforce the constraints described in docs/CREATIVITY_BOUNDARY_SPEC.md for the Idea slice (length of title, mission, goal, and number of starter steps).\n   - Truncate or clamp as needed and document this with comments.\n\n6) Integration notes\n   - Do not wire projectStore directly into React context in this task, but make sure it is written in a way that a React hook can easily subscribe to it in a later task.\n\nFocus on correctness, traceability, and clear typing.",
+  "acceptance_criteria": [
+    "projectStore exists in app/src/runtime/store/projectStore.ts or similar and manages an in-memory map of projects plus selectedProjectId.",
+    "projectStore API provides getProjects, getProject, getSelectedProject, createProject, updateProject, selectProject, and subscribe.",
+    "local_project_store.loadAllProjects is used at initialization to populate state.",
+    "saveProject is called whenever a project is created or updated.",
+    "Idea slice fields respect the limits defined in the Creativity Boundary spec, with truncation or clamping where appropriate."
+  ]
+}

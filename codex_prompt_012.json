@@ -1,0 +1,15 @@
+{
+  "sequence": 12,
+  "id": "WS-CODEX-012",
+  "phase": "Phase 1 \u2013 Core framework",
+  "title": "Define Project domain model and local storage adapter",
+  "summary": "Create a canonical Project type, station slices, and a local-storage backed adapter for loading and saving projects.",
+  "instructions": "You are now working on The Workshop's project model and persistence.\n\nGoal for this task:\nDefine the Project domain model, including an Idea Station slice, and implement a local storage adapter for loading and saving projects.\n\nPerform these steps:\n\n1) Define Project types\n   - Create or update app/src/domain/project.ts.\n   - Define a StationIdea type that includes:\n     - title: string\n     - mission: string\n     - goal: string\n     - starterSteps: string[] (1 to 3 entries)\n   - Define a Project type that includes at minimum:\n     - id: string\n     - name: string\n     - createdAt: string (ISO timestamp)\n     - updatedAt: string (ISO timestamp)\n     - idea?: StationIdea\n     - (leave placeholders or TODO comments for build, test, memory, reflect, share, replay slices)\n\n   - Enforce reasonable max lengths in comments based on docs/CREATIVITY_BOUNDARY_SPEC.md.\n\n2) Implement a local storage adapter\n   - Create app/src/runtime/storage/local_project_store.ts.\n   - Implement functions:\n     - loadAllProjects(): Promise<Project[]>\n     - loadProject(id: string): Promise<Project | null>\n     - saveProject(project: Project): Promise<void>\n   - Use window.localStorage with a single key (for example \"workshop.projects\") containing a JSON array of Project objects.\n   - Ensure defensive parsing: handle missing or malformed data by returning an empty array or null.\n\n3) Enforce basic size limits\n   - In saveProject, enforce a rough cap on:\n     - Number of projects (for example 50 for v1).\n     - Size of text fields (truncate if needed, consistent with Creativity Boundary spec).\n   - Document these limits in comments with a reference to docs/CREATIVITY_BOUNDARY_SPEC.md.\n\n4) Add simple ID generation helper\n   - If no standard exists yet, create a small helper (for example in domain or storage) to generate project IDs (timestamp + random suffix is fine for v1).\n\nDo not connect this adapter to React state or UI yet; that will be handled in the next tasks.",
+  "acceptance_criteria": [
+    "app/src/domain/project.ts defines a StationIdea type and a Project type with at least id, name, createdAt, updatedAt, and optional idea.",
+    "local_project_store.ts exists and exports loadAllProjects, loadProject, and saveProject using localStorage.",
+    "The storage adapter handles missing or malformed data defensively.",
+    "Basic limits on project count and field lengths are enforced or clearly documented.",
+    "A simple ID generation helper exists or is documented for creating new projects."
+  ]
+}

@@ -22,7 +22,7 @@ Fields:
 - title (string): Short, child-chosen project name.
 - description (string): Brief mission summary from the Design Dock.
 - status (enum): "draft" | "in_progress" | "paused" | "completed" | "archived".
-- currentStation (enum): "idea" | "build" | "test" | "memory" (where the child is now).
+- currentStation (enum): "idea" | "build" | "test" | "memory" | "reflect" | "share" | "replay" (where the child is now).
 - steps (array<Step>): Ordered list of steps for this project.
 - stationStates (object<StationState>): Map keyed by stationKey for per-station context.
 - tags (array<string>, optional): Simple labels (e.g., "comic", "robot").
@@ -37,7 +37,7 @@ Fields:
 - summary (string, optional): Extra guidance for the step.
 - status (enum): "todo" | "in_progress" | "blocked" | "done".
 - order (number): Display/order index within the project.
-- originStation (enum, optional): "idea" | "build" | "test" | "memory" (where it was created).
+- originStation (enum, optional): "idea" | "build" | "test" | "memory" | "reflect" | "share" | "replay" (where it was created).
 - acceptanceCriteria (string, optional): How we know this step is done.
 - notes (string, optional): Quick notes or hints.
 - createdAt (datetime ISO-8601): Creation timestamp.
@@ -48,7 +48,7 @@ Represents the latest context and artifacts for a Project inside one Station.
 Fields:
 - id (string): Unique station state id.
 - projectId (string): Parent Project.id.
-- stationKey (enum): "idea" | "build" | "test" | "memory".
+- stationKey (enum): "idea" | "build" | "test" | "memory" | "reflect" | "share" | "replay".
 - inputs (object): Station-specific inputs (e.g., child goal, constraints).
 - outputs (object): Station-specific outputs (e.g., mission brief, test findings).
 - activeStepIds (array<string>): Step ids currently in focus here.

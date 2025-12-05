@@ -1,0 +1,15 @@
+{
+  "sequence": 16,
+  "id": "WS-CODEX-016",
+  "phase": "Phase 3 \u2013 Build Station",
+  "title": "Implement Build Station (Assembly Bay) with single active step workflow",
+  "summary": "Create the Build Station UI for working on one active step at a time, wired to projectStore and optionally AI hints.",
+  "instructions": "You are now implementing the Build Station: Assembly Bay.\n\nGoal for this task:\nBuild a UI that lets the child choose a starter step from Idea Station, mark it as active, work on it, and mark it done, with optional AI hints.\n\nPerform these steps:\n\n1) Extend Project type with build slice\n   - In app/src/domain/project.ts, add a build slice to Project, for example:\n     - build?: {\n         steps: {\n           id: string;\n           text: string;\n           status: \"todo\" | \"active\" | \"done\";\n           notes?: string;\n         }[];\n         activeStepId?: string | null;\n       }\n   - Initial mapping can copy in starterSteps from idea as todo steps when Build Station is first opened.\n\n2) Create BuildStationPage component\n   - In app/src/stations/build/BuildStationPage.tsx:\n     - Use useProjects() to get the selected project and updateProject.\n     - If build slice is empty but idea.starterSteps exists, initialize build.steps from starterSteps.\n     - Render:\n       - A list of steps with their status.\n       - Ability to select one step as active (only one at a time).\n       - An area to enter notes for the active step.\n       - Buttons to mark the active step as done or move it back to todo.\n\n3) Optional AI hints for active step\n   - Use useAI() and callStationModel(\"build\", payload) to provide a button like \"Need ideas for this step?\".\n   - System prompt should frame the Build Station as:\n     - Helping with concrete suggestions for how to try a small piece of the step.\n     - Respecting safety and creativity boundaries.\n   - Stream results and display them as a short list of hints near the notes field.\n   - Do not auto-modify project steps based on AI; let the child copy ideas into notes manually.\n\n4) Persistence and limits\n   - All changes to build.steps and activeStepId should go through updateProject.\n   - Keep notes length within a sensible limit (see Creativity Boundary spec).\n   - Do not allow more than a modest number of steps (for example 10\u201312).\n\n5) Navigation\n   - Ensure Build Station route points to BuildStationPage and is easy to reach after Idea Station.\n\nFocus on making the Build Station feel like a calm, focused workspace for one step at a time.",
+  "acceptance_criteria": [
+    "Project type has a build slice with steps and optional activeStepId.",
+    "BuildStationPage.tsx exists and can initialize steps from Idea Station starterSteps.",
+    "Only one step can be active at a time; status transitions between todo, active, and done work correctly.",
+    "AI hint button uses callStationModel('build', \u2026) and displays suggestions without auto-editing steps.",
+    "All text fields and step counts respect boundaries from the Creativity Boundary spec."
+  ]
+}

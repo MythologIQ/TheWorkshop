@@ -1,0 +1,15 @@
+{
+  "sequence": 17,
+  "id": "WS-CODEX-017",
+  "phase": "Phase 3 \u2013 Test Station",
+  "title": "Implement Test Station (Diagnostics Corridor) focused on clarity checks",
+  "summary": "Create the Test Station UI as a focused, bounded chat around clarity and understanding, wired to projectStore and AIProvider.",
+  "instructions": "You are implementing the Test Station: Diagnostics Corridor.\n\nGoal for this task:\nProvide a focused interface where the child can ask whether their work makes sense and get concrete, gentle feedback.\n\nPerform these steps:\n\n1) Extend Project type with test slice\n   - In app/src/domain/project.ts, add a test slice such as:\n     - test?: {\n         sessions: {\n           id: string;\n           createdAt: string;\n           question: string;\n           findings: string[];\n         }[];\n       }\n   - Keep this compact; it should be a short history of clarity checks, not full chats.\n\n2) Create TestStationPage component\n   - In app/src/stations/test/TestStationPage.tsx:\n     - Use useProjects() to get selectedProject and updateProject.\n     - Show a simple UI with:\n       - One text field: \"What are you wondering about?\"\n       - A button: \"Run a test\".\n       - A small area to stream the AI response and then summarize findings.\n     - After a test run, store a session entry in project.test.sessions with:\n       - question\n       - a short list of up to 5 findings extracted from the AI output.\n\n3) AI integration\n   - Use useAI().callStationModel(\"test\", payload) for the test.\n   - System prompt should frame the station as:\n     - Checking if the idea or step is clear to another person.\n     - Offering kind, concrete suggestions in simple language.\n     - Refusing unsafe content and staying within creativity boundaries.\n   - Encourage the model to respond with short bullet-like points that can be parsed into findings.\n\n4) Boundaries\n   - Enforce:\n     - One main question per session.\n     - A short interaction limit (for example, up to 5 findings only).\n   - Reflect these constraints in both UI and parsing logic.\n\n5) Display past sessions\n   - Below the main interface, show a simple list of previous test sessions with question and a one-line summary of findings.\n   - Keep the design minimal.\n\nDo not implement Memory/Reflect behavior here beyond saving test sessions. Focus on clarity testing as a bounded tool.",
+  "acceptance_criteria": [
+    "Project type has a compact test slice storing sessions with question and findings.",
+    "TestStationPage.tsx exists and allows running a new test with a single question field and a button.",
+    "AI responses are generated via callStationModel('test', \u2026) and parsed into up to 5 short findings.",
+    "Each test run appends a session to project.test.sessions via updateProject.",
+    "The UI shows a simple history of past test sessions in a kid-friendly way."
+  ]
+}

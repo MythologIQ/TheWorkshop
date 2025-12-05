@@ -1,0 +1,14 @@
+{
+  "sequence": 14,
+  "id": "WS-CODEX-014",
+  "phase": "Phase 1 \u2013 Core framework",
+  "title": "Expose projectStore via React hook and build basic project list UI",
+  "summary": "Create a React hook that bridges projectStore into components and build a simple project selection screen.",
+  "instructions": "You are now tying the projectStore into the React app shell.\n\nGoal for this task:\nProvide a React hook for accessing projectStore and create a simple project list UI where users can create and select projects.\n\nPerform these steps:\n\n1) Create a React hook for projectStore\n   - In app/src/runtime/hooks or a similar location, create useProjects.ts.\n   - The hook should:\n     - Subscribe to projectStore on mount.\n     - Expose:\n       - projects: Project[]\n       - selectedProject: Project | undefined\n       - createProject(name: string)\n       - selectProject(id: string | null)\n       - updateProject(id: string, patch: Partial<Project>)\n     - Clean up subscription on unmount.\n\n2) Implement a ProjectSelectionPage\n   - In app/src/pages or equivalent, create ProjectSelectionPage.tsx.\n   - The page should:\n     - Use useProjects() to retrieve the list and selection APIs.\n     - Show a list of existing projects with name and updatedAt.\n     - Provide a simple \"New Project\" form with a name field and button.\n     - Select a project when clicked, and navigate to the main Workshop view for that project (router integration may be minimal for now).\n\n3) Wire the page into routing\n   - Update the router configuration so that:\n     - There is a route like \"/projects\" that shows ProjectSelectionPage.\n     - Optionally treat it as the default / root route for now.\n\n4) Visual style\n   - Use the existing design system (Tailwind/Radix/Shadcn if available) to keep styling simple and clean.\n   - Ensure the layout and text are readable for kids, with clear buttons and labels.\n\nDo not implement station-specific UI here. Focus on project selection and the hook layer.",
+  "acceptance_criteria": [
+    "A useProjects hook exists and exposes projects, selectedProject, and basic CRUD/select operations.",
+    "ProjectSelectionPage.tsx shows a list of projects and allows creating a new one.",
+    "Selecting a project updates projectStore and routes to the main Workshop view (or at least updates selection in state).",
+    "The hook correctly subscribes to and unsubscribes from projectStore changes."
+  ]
+}

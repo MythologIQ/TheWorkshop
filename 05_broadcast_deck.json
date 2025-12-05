@@ -1,0 +1,36 @@
+{
+  "task_name": "Share Station (Broadcast Deck)",
+  "steps": [
+    {
+      "description": "Compose the Share Station spec documentation (Broadcast Deck). Describe its Purpose (turning project work into shareable presentations/videos/comics), Role in the loop (Ask for audience & format, Plan the storytelling, Act by generating a shareable artefact, Review to ensure safety), Inputs (project summary, assets, audience), Outputs (presentation slides, script or comic panels), User experience (feels like a futuristic broadcast studio), and Safety behavior (no personal details, truth over flash, export requires adult check).",
+      "targets": [
+        "docs/stations/SHARE_STATION.md"
+      ]
+    },
+    {
+      "description": "Write the Broadcast Deck system prompt file to define the Share Station\u2019s AI persona. It should explain that the station helps package the project into a presentation or similar, and include explicit Safety Contract guidance: e.g. do not reveal personal info or locations, maintain truthfulness, friendly encouraging tone, and prompt the child to get a parent's approval before finalizing any export. Also outline the Ask\u2192Plan\u2192Act\u2192Review steps (with emphasis on planning the communication).",
+      "targets": [
+        "prompts/stations/share_station_system.txt"
+      ]
+    },
+    {
+      "description": "Update the application to recognize the new Share Station. Add \"share\" to the StationKey enum and any station listings so the system knows about the Broadcast Deck station. Reflect this addition in the data model documentation as well, enumerating 'share' as a valid station key with its purpose.",
+      "targets": [
+        "app/frontend/src/domain/project.ts",
+        "docs/DATA_MODEL.md"
+      ]
+    },
+    {
+      "description": "Create a feature spec file FEATURE-WS-0006 for Share Station (Broadcast Deck). Document the feature summary (project publishing layer with safety checks), in-scope functionality (exporting to child-friendly formats, requiring adult oversight for sharing), affected stations or modules, and acceptance criteria (e.g. the station can produce a summary presentation or storybook, and flags any sensitive content for removal).",
+      "targets": [
+        "docs/features/FEATURE-WS-0006.md"
+      ]
+    },
+    {
+      "description": "Add an entry to the project CHANGELOG noting the introduction of the Share Station. Use the feature ID (FEATURE-WS-0006) and date, and briefly describe that the Broadcast Deck was added as a publishing station with export-to-parent/teacher capabilities and safety guardrails for shared content.",
+      "targets": [
+        "roadmap/CHANGELOG.md"
+      ]
+    }
+  ]
+}

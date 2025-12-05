@@ -1,0 +1,15 @@
+{
+  "sequence": 19,
+  "id": "WS-CODEX-019",
+  "phase": "Phase 5 \u2013 Share Station",
+  "title": "Implement Share Station (Broadcast Deck) and export template wiring",
+  "summary": "Create the Share Station UI that assembles a one-page summary from project data using the export template design.",
+  "instructions": "You are implementing the Share Station: Broadcast Deck.\n\nGoal for this task:\nLet the child turn their project journey into a single, safe, shareable artifact such as a one-page summary.\n\nPerform these steps:\n\n1) Extend Project type with share slice\n   - In app/src/domain/project.ts, add a share slice such as:\n     - share?: {\n         lastExportAt?: string;\n         lastFormat?: \"page\" | \"poster\";\n       }\n   - Keep this minimal for v1; the shared artifact can be generated on the fly from other slices.\n\n2) Create ShareStationPage component\n   - In app/src/stations/share/ShareStationPage.tsx:\n     - Use useProjects() to get the selected project.\n     - Provide controls to choose:\n       - Audience type (for example: family, teacher, friend).\n       - Export format (for example: simple one-page summary).\n     - Render a live preview of the export using the template design described in assets/manifest (template-share-page-a4).\n\n3) Compose export content\n   - Build the preview content from:\n     - Project name and idea mission/goal.\n     - Key steps from build.\n     - One or two test findings.\n     - One or two memory reflections.\n   - Keep text concise and safe; do not include personal contact information or sensitive details.\n   - Consider using AI via callStationModel(\"share\", payload) to help phrase the summary in kid-friendly language, but enforce strict length limits and safety constraints.\n\n4) Provide export actions\n   - For v1, support at least:\n     - Printing via the browser\u2019s print dialog (styling a print-friendly view).\n     - Export to a simple downloadable image or PDF if feasible, or document this as a later enhancement.\n   - Ensure there is a clear reminder to check with a trusted adult before sharing anything.\n\n5) Update share slice metadata\n   - When an export is generated or printed, update project.share.lastExportAt and lastFormat via updateProject.\n\nFocus on making Share Station feel like a celebration and storytelling moment, not a social media broadcast tool.",
+  "acceptance_criteria": [
+    "Project type has a minimal share slice to track lastExportAt and lastFormat.",
+    "ShareStationPage.tsx exists and lets the user pick an audience and format, and shows a live preview.",
+    "Preview content is composed from idea, build, test, and memory slices in concise, safe language.",
+    "Print output is reasonably styled for a one-page summary using the existing template idea.",
+    "There is clear messaging encouraging review with a trusted adult before sharing."
+  ]
+}

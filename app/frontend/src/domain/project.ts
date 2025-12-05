@@ -2,7 +2,7 @@
 
 export type UserRole = 'kid' | 'mentor' | 'admin';
 export type ProjectStatus = 'draft' | 'in_progress' | 'paused' | 'completed' | 'archived';
-export type StationKey = 'idea' | 'build' | 'test' | 'memory';
+export type StationKey = 'idea' | 'build' | 'test' | 'memory' | 'reflect' | 'share' | 'replay';
 export type StepStatus = 'todo' | 'in_progress' | 'blocked' | 'done';
 
 export interface User {

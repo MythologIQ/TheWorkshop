@@ -1,0 +1,14 @@
+{
+  "sequence": "023",
+  "id": "WS-CODEX-023",
+  "phase": "Post-v1 Enhancements \u2013 Theme Variants",
+  "title": "Introduce theme variants (Starship, Dwarven Forge, Wizard Tower) without changing mechanics.",
+  "summary": "Add a theme system so the visual layer can swap between multiple skins while the mechanics stay identical.",
+  "instructions": "You are expanding The Workshop to support multiple visual themes while keeping the same underlying mechanics, data, and safety rules.\n\nGoal for this task:\nImplement a theme system that can switch between Starship Shipyard, Dwarven Forge, and Wizard Tower skins, without breaking Station logic.\n\nPerform these steps:\n\n1) Theme domain model\n   - Create app/src/domain/theme.ts defining:\n     - ThemeId type: 'starship', 'forge', 'tower'.\n     - ThemeConfig type with:\n       - id, displayName, palette, iconSetIds, backgroundAssetIds, stationLabelOverrides (if needed).\n   - Define at least three theme configs, mapping to existing or planned assets.\n\n2) Theme store\n   - Create app/src/runtime/store/themeStore.ts with:\n     - getTheme(), setTheme(id: ThemeId), subscribe(listener).\n     - Persist the selected ThemeId to local storage and load it on startup.\n\n3) Theme-driven UI wiring\n   - Update layout components (ShellLayout, StationNav, TopBar, BackgroundCanvas) to read the active ThemeConfig.\n   - Apply theme properties such as:\n     - Color palette tokens (mapped to Tailwind classes where possible).\n     - Icon file names or identifiers for Stations.\n     - Background image asset names.\n   - Avoid hardcoding theme-specific visuals outside of this configuration layer.\n\n4) Theme selection UI\n   - Add a theme picker to the Settings surface or a dedicated 'Workshop Skins' panel.\n   - Represent each theme with a small preview card and clear label (for example: 'Starship Shipyard', 'Dwarven Forge', 'Wizard Tower').\n   - Ensure changes are applied live and persisted.\n\n5) Safety and copy\n   - Confirm that theme changes do not alter the Safety Contract, Station behavior, or core copy around rules.\n   - Theme is presentation only; all mechanics and constraints remain identical.\n\nDo not over-design theme art here; focus on the configuration system and wiring. The actual visual assets can be improved over time.",
+  "acceptance_criteria": [
+    "ThemeId and ThemeConfig types exist with configurations for 'starship', 'forge', and 'tower'.",
+    "themeStore manages the active theme and persists it across sessions.",
+    "Layout and core UI components use ThemeConfig data instead of hardcoded visuals.",
+    "A theme picker UI exists, and switching themes updates visuals without breaking functionality or rules."
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "sequence": "026",
+  "id": "WS-CODEX-026",
+  "phase": "Post-v1 Enhancements \u2013 Local Telemetry and Diagnostics",
+  "title": "Add local-only telemetry and diagnostics panel (offline, privacy-respecting).",
+  "summary": "Track simple usage metrics locally and surface them in a diagnostics panel, with clear opt-in/out.",
+  "instructions": "You are implementing a local-only telemetry and diagnostics view to help adults or developers understand usage patterns, while remaining fully offline and privacy-respecting.\n\nGoal for this task:\nTrack simple, anonymous usage metrics locally and surface them in a diagnostics panel, with clear opt-in and opt-out.\n\nPerform these steps:\n\n1) Telemetry model\n   - Create app/src/domain/telemetry.ts defining:\n     - Metrics such as:\n       - totalProjectsCreated\n       - totalSessions\n       - stationVisitCounts (by stationKey)\n       - completedTutorials\n     - TelemetryState type that stores these counts.\n\n2) Telemetry store\n   - Create app/src/runtime/store/telemetryStore.ts that:\n     - Loads TelemetryState from local storage.\n     - Increments metrics based on events (project created, station visited, tutorial completed, etc.).\n     - Exposes subscribe(listener) for UI components.\n\n3) Event hooks\n   - Identify key locations (project creation, station navigation, tutorial completion) and fire telemetry events from there.\n   - Ensure these events are simple and do not leak sensitive content (only counts and timestamps).\n\n4) Diagnostics panel UI\n   - Implement a DiagnosticsPage or panel under app/src/pages/DiagnosticsPage.tsx:\n     - Shows high-level metrics in a simple, understandable way.\n     - Includes a clear statement that data never leaves the device.\n     - Provides buttons to:\n       - Reset metrics.\n       - Toggle telemetry collection on or off.\n   - Save the telemetry enabled/disabled flag in local storage.\n\n5) Privacy guarantees\n   - Confirm that no telemetry data is ever sent across the network.\n   - Add a short section to docs/PRIVACY_NOTES.md describing how telemetry works.\n\nDo not implement any remote logging or analytics in this task; keep everything offline and transparent.",
+  "acceptance_criteria": [
+    "TelemetryState and telemetryStore exist and track basic usage counts per station and project.",
+    "Key actions (project creation, station navigation, tutorial completion) increment telemetry in a minimal way.",
+    "A diagnostics UI shows metrics and lets the user reset or disable telemetry.",
+    "Telemetry storage is local-only and documented, with no network calls added for analytics."
+  ]
+}

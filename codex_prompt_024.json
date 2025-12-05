@@ -1,0 +1,15 @@
+{
+  "sequence": "024",
+  "id": "WS-CODEX-024",
+  "phase": "Post-v1 Enhancements \u2013 Model Selector and Performance Modes",
+  "title": "Expose WebLLM model selector and performance modes for advanced users.",
+  "summary": "Let adults choose between different WebLLM models and performance modes while keeping kid-safe defaults.",
+  "instructions": "You are adding control over the WebLLM model and runtime behavior, primarily for adults or advanced users, while maintaining safe defaults for kids.\n\nGoal for this task:\nImplement a simple model selector and performance mode configuration that can tune responsiveness and quality, with guardrails.\n\nPerform these steps:\n\n1) Model configuration\n   - Create app/src/runtime/llm/model_config.ts with:\n     - Known model entries (matching the MODEL_CATALOG): small, medium, tiny options.\n     - Metadata for each model: name, approximate RAM usage, relative speed score.\n   - Define a ModelChoice type and a PerformanceMode type (for example: 'fast', 'balanced', 'detailed').\n\n2) LLM settings store\n   - Create app/src/runtime/store/llmSettingsStore.ts that manages:\n     - selectedModelId (default to the smallest safe model).\n     - performanceMode.\n     - maximumTokensPerCall, adjusted based on performanceMode.\n   - Persist these settings to local storage and load them at startup.\n\n3) Integrate with WebLLM loader\n   - Update webllm_loader.ts to respect the selectedModelId and performance parameters.\n   - When the model is changed, handle reinitialization or worker recreation gracefully.\n   - Provide clear comments about the tradeoffs between models.\n\n4) Settings UI\n   - Extend the Settings surface with an 'Advanced AI Settings' section (calm copy, behind an 'Adults / advanced users only' affordance if possible).\n   - Surface:\n     - Model selector (with descriptions in plain language).\n     - Performance mode toggle (fast, balanced, detailed).\n\n5) Safety and limits\n   - Ensure that increasing model size does not change SafetyContract enforcement.\n   - Hard cap maximumTokensPerCall even in 'detailed' mode to maintain responsiveness and avoid overwhelming kids.\n\nDo not introduce cloud-based models here; stay within the local WebLLM boundary.",
+  "acceptance_criteria": [
+    "model_config.ts describes the available WebLLM models with metadata.",
+    "llmSettingsStore exists and persists selected model and performance mode.",
+    "webllm_loader.ts uses llmSettingsStore to choose models and token limits.",
+    "Settings UI exposes model and performance choices in a safe, clear way.",
+    "Safety behavior and token caps remain enforced regardless of model size."
+  ]
+}
