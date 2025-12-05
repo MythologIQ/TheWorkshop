@@ -1,14 +1,24 @@
-import { getDefaultModel, findModel, ModelEntry } from './model_config';
+import { DEFAULT_MODEL_ID } from './model_manifest';
+import {
+  ChatCompletionChunk,
+  ChatCompletionRequestStreaming,
+  CreateWebWorkerMLCEngine,
+  WebWorkerMLCEngine,
+  MLCEngineConfig,
+} from '@mlc-ai/web-llm';
 
 export type StreamChunk = { token: string; done: boolean };
 
-type GenerateOptions = {
+export type GenerateOptions = {
   maxTokens?: number;
   temperature?: number;
-  systemPrompt?: string;
+  timeoutMs?: number;
 };
 
-// Safety wrapper: strips disallowed content and tags obvious uncertainty.
+const DEFAULT_MAX_TOKENS = 512;
+const DEFAULT_TIMEOUT_MS = 15_000;
+const DEFAULT_TEMPERATURE = 0.6;
+
 const DISALLOWED_PATTERNS = [/suicide/i, /self-harm/i, /violence/i, /kill/i, /weapon/i];
 const scrub = (text: string): string => {
   let cleaned = text;
@@ -23,47 +33,113 @@ const tagUncertainty = (text: string): string => {
   return uncertain ? `${text} (?)` : text;
 };
 
-export type LoadedModel = {
-  model: ModelEntry;
-  generate: (prompt: string, opts?: GenerateOptions) => AsyncGenerator<StreamChunk, void, unknown>;
+const sanitizeToken = (token: string): string => tagUncertainty(scrub(token));
+
+const workerUrl = new URL('./webllm_worker.ts', import.meta.url);
+
+const ENGINE_CONFIG: MLCEngineConfig = {
+  logLevel: 'warn',
 };
 
-// Placeholder interface to a WebLLM engine; swap with real import when available.
-type WebLLMEngine = {
-  generate: (prompt: string, opts?: GenerateOptions) => AsyncGenerator<string, void, unknown>;
+let worker: Worker | null = null;
+let enginePromise: Promise<WebWorkerMLCEngine> | null = null;
+
+const resetEngine = () => {
+  worker?.terminate();
+  worker = null;
+  enginePromise = null;
 };
 
-// TODO: wire to actual WebLLM init; for now, create a stub generator.
-const createStubEngine = (): WebLLMEngine => ({
-  async *generate(prompt: string) {
-    const tokens = scrub(prompt)
-      .split(/\s+/)
-      .slice(0, 64);
-    for (const token of tokens) {
-      yield token;
-    }
-  },
-});
+const createWorker = (): Worker => {
+  if (!worker) {
+    worker = new Worker(workerUrl, { type: 'module' });
+  }
+  return worker;
+};
 
-export const loadModel = async (modelId?: string): Promise<LoadedModel> => {
-  const model = findModel(modelId || '') || getDefaultModel();
-  const engine = createStubEngine();
+const getEngine = async (): Promise<WebWorkerMLCEngine> => {
+  if (!enginePromise) {
+    const workerInstance = createWorker();
+    enginePromise = CreateWebWorkerMLCEngine(workerInstance, DEFAULT_MODEL_ID, ENGINE_CONFIG).catch(
+      (error) => {
+        console.error('Failed to initialize WebLLM engine', error);
+        resetEngine();
+        throw error;
+      },
+    );
+  }
+  return enginePromise;
+};
 
-  const generate = async function* (
-    prompt: string,
-    opts?: GenerateOptions,
-  ): AsyncGenerator<StreamChunk, void, unknown> {
-    const systemPrefix = opts?.systemPrompt ? `${opts.systemPrompt}\n` : '';
-    const composed = `${systemPrefix}${prompt}`;
-    let count = 0;
-    for await (const token of engine.generate(composed, opts)) {
-      if (opts?.maxTokens && count >= opts.maxTokens) break;
-      const safeToken = tagUncertainty(scrub(token));
-      yield { token: safeToken, done: false };
-      count += 1;
+export const generateStream = async function* (
+  prompt: string,
+  opts: GenerateOptions = {},
+): AsyncGenerator<StreamChunk, void, unknown> {
+  const timeoutMs = opts.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const maxTokens = Math.min(opts.maxTokens ?? DEFAULT_MAX_TOKENS, DEFAULT_MAX_TOKENS);
+  const temperature = opts.temperature ?? DEFAULT_TEMPERATURE;
+  const startTime = Date.now();
+  let tokensUsed = 0;
+  let doneEmitted = false;
+
+  try {
+    const engine = await getEngine();
+    const request: ChatCompletionRequestStreaming = {
+      model: DEFAULT_MODEL_ID,
+      messages: [{ role: 'user', content: prompt }],
+      stream: true,
+      max_tokens: maxTokens,
+      temperature,
+    };
+    const stream = (await engine.chatCompletion(request)) as AsyncIterable<ChatCompletionChunk>;
+
+    for await (const chunk of stream) {
+      // Timeout guard keeps low-end devices responsive instead of hanging forever.
+      if (Date.now() - startTime > timeoutMs) {
+        console.warn('WebLLM request exceeded timeout guard', timeoutMs);
+        yield { token: '', done: true };
+        doneEmitted = true;
+        break;
+      }
+
+      const choice = chunk.choices?.[0];
+      if (!choice) {
+        continue;
+      }
+
+      const text = choice.delta?.content;
+      if (typeof text === 'string' && text.length > 0) {
+        tokensUsed += 1;
+        yield { token: sanitizeToken(text), done: false };
+      }
+
+      if (choice.finish_reason) {
+        if (!doneEmitted) {
+          yield { token: '', done: true };
+          doneEmitted = true;
+        }
+        break;
+      }
+
+      // Token budget guard keeps outputs short, matching the Creativity Boundary spec.
+      if (tokensUsed >= maxTokens) {
+        console.warn('WebLLM reached configured token budget');
+        if (!doneEmitted) {
+          yield { token: '', done: true };
+          doneEmitted = true;
+        }
+        break;
+      }
     }
+  } catch (error) {
+    // Surface a friendly apology so the UI has something to show even if the engine fails.
+    const friendly = 'The Workshop AI hit a hiccup. Please try again in a moment.';
+    console.error('WebLLM generateStream error', error);
+    yield { token: friendly, done: true };
+    return;
+  }
+
+  if (!doneEmitted) {
     yield { token: '', done: true };
-  };
-
-  return { model, generate };
+  }
 };
