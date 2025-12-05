@@ -1,9 +1,11 @@
 import React from 'react';
 
 const OrbiterBridgePage: React.FC = () => (
-  <div className="p-4">
-    <h1 className="text-xl font-semibold">Orbiter Bridge</h1>
-    <p>Placeholder for Reflect Station UI.</p>
+  <div className="space-y-2">
+    <h1 className="text-2xl font-semibold text-slate-900">Orbiter Bridge</h1>
+    <p className="text-slate-600">
+      Notice patterns, tag breakthroughs and confusions, and capture what you learned about how you work.
+    </p>
   </div>
 );
 

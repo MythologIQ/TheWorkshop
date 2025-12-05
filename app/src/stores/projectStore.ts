@@ -34,7 +34,6 @@ const init = async () => {
   setState({ projects, activeProjectId: activeId, loading: false });
 };
 
-// Kick off initial load
 void init();
 
 export const useProjectStore = () => {
@@ -47,7 +46,7 @@ export const useProjectStore = () => {
   return { ...state, actions: projectActions };
 };
 
-const clamp = (text: string, max = 2048) => (text.length > max ? `${text.slice(0, max)}…` : text);
+const clamp = (text: string, max = 2048) => (text.length > max ? `${text.slice(0, max)}...` : text);
 
 const autosave = async (project: Project) => {
   await persistProject(project);
