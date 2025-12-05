@@ -5,13 +5,13 @@ import { Step } from '../domain/step';
 import { Reflection } from '../domain/reflection';
 import { TestResult } from '../domain/test';
 import {
-  listProjects,
+  loadAllProjects,
   loadProject,
   saveProject as persistProject,
   deleteProject as removeProject,
   getActiveProjectId,
   setActiveProjectId,
-} from '../runtime/storage/local_storage_adapter';
+} from '../runtime/storage/local_project_store';
 
 type StoreState = {
   projects: Project[];
@@ -30,7 +30,7 @@ const setState = (next: Partial<StoreState>) => {
 };
 
 const init = async () => {
-  const [projects, activeId] = await Promise.all([listProjects(), getActiveProjectId()]);
+  const [projects, activeId] = await Promise.all([loadAllProjects(), getActiveProjectId()]);
   setState({ projects, activeProjectId: activeId, loading: false });
 };
 
@@ -51,7 +51,7 @@ const clamp = (text: string, max = 2048) => (text.length > max ? `${text.slice(0
 
 const autosave = async (project: Project) => {
   await persistProject(project);
-  const projects = await listProjects();
+  const projects = await loadAllProjects();
   setState({ projects });
 };
 
@@ -88,7 +88,7 @@ const setActive = async (id: string | null) => {
 
 const deleteProject = async (id: string) => {
   await removeProject(id);
-  const projects = await listProjects();
+  const projects = await loadAllProjects();
   const activeProjectId = storeState.activeProjectId === id ? null : storeState.activeProjectId;
   setState({ projects, activeProjectId });
   if (activeProjectId === null) {
