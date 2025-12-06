@@ -5,6 +5,7 @@ import templates, { CONTENT_PACKS } from '../data/templates_builtin';
 import { useProjects } from '../runtime/hooks/useProjects';
 import { applyTemplate } from '../runtime/templates/applyTemplate';
 import { useTranslation } from '../i18n/useTranslation';
+import CreationLabStamp from '../components/CreationLabStamp';
 
 const STATION_ROUTES: Record<StationKey, string> = {
   idea: '/dock/idea',
@@ -157,6 +158,7 @@ const ProjectSelectionPage: React.FC = () => {
           </p>
         )}
       </section>
+      <CreationLabStamp className="mx-auto max-w-xs" />
     </section>
   );
 };

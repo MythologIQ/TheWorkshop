@@ -3,6 +3,7 @@ import type { StationKey } from '../../domain/project';
 import { useProjects } from '../../runtime/hooks/useProjects';
 import { usePreferences } from '../../runtime/context/preferencesContext';
 import { useTranslation } from '../../i18n/useTranslation';
+import CreationLabStamp from '../../components/CreationLabStamp';
 
 const MAX_LABEL_LENGTH = 120;
 
@@ -225,6 +226,7 @@ const ReplayStationPage: React.FC = () => {
             </div>
           )}
         </section>
+        <CreationLabStamp className="mx-auto max-w-xs" />
       </div>
     </div>
   );

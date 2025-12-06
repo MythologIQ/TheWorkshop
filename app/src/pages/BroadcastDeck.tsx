@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from '../i18n/useTranslation';
+import CreationLabStamp from '../components/CreationLabStamp';
 
 const BroadcastDeckPage: React.FC = () => {
   const { stationNames, descriptions } = useTranslation();
@@ -11,6 +12,7 @@ const BroadcastDeckPage: React.FC = () => {
       <p className="text-xs uppercase tracking-[0.4em] text-slate-500">Share Station</p>
       <h1 className="text-3xl font-semibold text-slate-900">{stationNames.share}</h1>
       <p className="text-sm text-slate-500">{descriptions.share}</p>
+      <CreationLabStamp className="mt-6 mx-auto max-w-xs" />
     </section>
   );
 };

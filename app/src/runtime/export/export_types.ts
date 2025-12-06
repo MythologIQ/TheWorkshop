@@ -90,5 +90,6 @@ export interface ExportedProject {
 export interface ProjectExportV1 {
   schemaVersion: typeof EXPORT_SCHEMA_VERSION;
   exportedAt: string;
+  creationLabSignature: string;
   project: ExportedProject;
 }

@@ -4,7 +4,20 @@ import type { Project, ProjectSnapshot } from '../../domain/project';
 import type { Reflection } from '../../domain/reflection';
 import type { Step } from '../../domain/step';
 import type { TestResult } from '../../domain/test';
-import { EXPORT_SCHEMA_VERSION, ExportedArchive, ExportedSnapshot, ExportedStep, ExportedReflection, ExportedStationMemory, ExportedStationReflect, ExportedTest, ExportedProject, ProjectExportV1 } from './export_types';
+import {
+  EXPORT_SCHEMA_VERSION,
+  ExportedArchive,
+  ExportedSnapshot,
+  ExportedStep,
+  ExportedReflection,
+  ExportedStationMemory,
+  ExportedStationReflect,
+  ExportedTest,
+  ExportedProject,
+  ProjectExportV1,
+} from './export_types';
+
+export const CREATION_LAB_SIGNATURE = 'Created in the MythologIQ Creation Lab';
 
 const ensureSlug = (value: string): string => {
   const sanitized = value
@@ -134,6 +147,7 @@ export const exportProject = (projectId: string): Blob => {
   const payload: ProjectExportV1 = {
     schemaVersion: EXPORT_SCHEMA_VERSION,
     exportedAt: new Date().toISOString(),
+    creationLabSignature: CREATION_LAB_SIGNATURE,
     project: buildExportedProject(project),
   };
   const serialized = JSON.stringify(payload, null, 2);

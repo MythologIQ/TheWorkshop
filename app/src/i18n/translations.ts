@@ -93,6 +93,10 @@ export interface Translation {
     statusImportSuccess: string;
     statusImportFailure: string;
   };
+  creationLab: {
+    stamp: string;
+    brandName: string;
+  };
   insights: {
     heading: string;
     description: string;
@@ -254,6 +258,10 @@ const englishTranslation: Translation = {
     statusExport: 'Preparing your download...',
     statusImportSuccess: 'Project imported and selected.',
     statusImportFailure: 'Unable to read that file. Try a different .workshop.json export.',
+  },
+  creationLab: {
+    brandName: 'MythologIQ Creation Lab',
+    stamp: 'Created in the MythologIQ Creation Lab',
   },
   insights: {
     heading: 'Adult insights',
