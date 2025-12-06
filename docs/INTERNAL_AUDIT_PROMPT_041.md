@@ -45,3 +45,23 @@
 ### Step 4 – Self evaluation
 - Work appears grouped by functionality, but need to confirm doc duplication across prompts.
 - Unsure whether `docs/user/` subfolders all belong to final product vs notes; will review before final commits.
+
+## Cleanup actions
+- Added `.gitignore` entries for `codex_prompt_*.json` and `codex_prompts_*.json` so prompt artifacts stay out of version control instead of deleting them.
+
+## Verification commands
+- `npm run check:assets` – pass (asset manifest validation succeeded).
+- `npm run lint` – pass (eslint completed without errors).
+- `npm run build` – pass (Vite build succeeded, 79 modules).
+- `npm test` – pass (Vitest suite executed, 20 tests, warnings about future router flags only).
+
+### Step 5 – Self evaluation
+- All four commands passed on this run without additional fixes.
+- No divergence from prior prompt language beyond the required new files and doc updates.
+
+## Consolidation commits
+- `74eaf35` – `chore: consolidate prompts 025 to 040` (captures AI persona, telemetry stores, new pages, docs, tooling, and verification checks added for prompts 025-040).
+
+### Step 6 – Self evaluation
+- Working tree is clean after the consolidation commit.
+- The commit aligns with the consolidation strategy (Group A/B/C combined into one cohesive snapshot).
