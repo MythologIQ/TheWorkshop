@@ -5,6 +5,7 @@ export interface Preferences {
   locale: Locale;
   largerText: boolean;
   extraLabels: boolean;
+  adaptiveCoachingEnabled: boolean;
 }
 
 const STORAGE_KEY = 'workshop.preferences';
@@ -12,6 +13,7 @@ const DEFAULT_PREFERENCES: Preferences = {
   locale: 'en',
   largerText: false,
   extraLabels: false,
+  adaptiveCoachingEnabled: true,
 };
 
 const loadPreferences = (): Preferences => {

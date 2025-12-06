@@ -82,6 +82,15 @@ Example for Build Station:
 
 New stations must include this mapping in their spec before implementation.
 
+## 4.5 Replay Station (Time Tunnels)
+
+- Station key: `replay`.  
+- Reads: project snapshots plus the current project state for context.  
+- Writes: a new snapshot entry or a restored branch after explicit confirmation.  
+- Log entry: timestamp, snapshot label, and a short note that the time tunnel was navigated.  
+- Bound snapshots to around 10 entries and only store the essential slices (title, description, steps, tests, reflections, memory, reflect, share, and current station) so the archive stays compact.  
+- Restores or branching actions must warn that the current path is being replaced and that Replay is about exploring alternate possibilities, not regret.
+
 ## 5. Creativity Boundary Compliance
 
 Stations must enforce the Creativity Boundary Specification at three points:

@@ -207,3 +207,10 @@ The Workshop v1 is considered successful if:
 - Developers can extend the system by adding new stations that follow the existing patterns and constraints.
 
 This project plan is a living document. Changes must be tracked through version control and associated with specific feature or governance updates.
+
+## v1 Release Summary
+
+- Replay Station (Time Tunnels) now preserves up to ten snapshots, lets children inspect them, and branches or restores only after explicit confirmation.  
+- Accessibility and performance were reviewed: primary controls expose `aria` labels, status text uses live regions, and navigation links clearly announce the current station for keyboard users.  
+- Documentation was refreshed (plan, timeline, station specs, and release notes) so adults and future contributors understand the complete v1 story.  
+- Package metadata and release notes are synced to `v1.0.0`, highlighting the finished feature set and safety posture.

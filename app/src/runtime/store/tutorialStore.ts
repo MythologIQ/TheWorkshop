@@ -1,4 +1,5 @@
 import type { TutorialId, TutorialState } from '../../domain/tutorial';
+import { recordTutorialCompleted } from './telemetryStore';
 
 const STORAGE_KEY = 'workshop.tutorial';
 
@@ -75,6 +76,7 @@ export const completeTutorial = (): void => {
     currentStepIndex: 0,
     completedAt: new Date().toISOString(),
   });
+  recordTutorialCompleted();
 };
 
 export const nextStep = (totalSteps: number): void => {

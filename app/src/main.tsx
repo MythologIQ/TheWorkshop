@@ -5,6 +5,7 @@ import App from './App';
 import { AIProvider } from './runtime/ai/AIProvider';
 import './styles/index.css';
 import { PreferencesProvider } from './runtime/context/preferencesContext';
+import { registerServiceWorker } from './runtime/offline/registerServiceWorker';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -17,3 +18,5 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     </PreferencesProvider>
   </React.StrictMode>,
 );
+
+registerServiceWorker();

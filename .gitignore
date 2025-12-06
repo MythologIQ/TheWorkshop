@@ -5,3 +5,5 @@ dist/
 .env.local
 .idea/
 .vscode/
+codex_prompt_*.json
+codex_prompts_*.json

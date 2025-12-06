@@ -1,8 +1,10 @@
-import { Project, StationIdea } from '../../domain/project';
+import type { Project, StationIdea } from '../../domain/project';
+import type { ProfileId } from '../../domain/profile';
+import { DEFAULT_PROFILE_ID } from '../../domain/profile';
 import { newId } from '../../domain/id';
 
 const PROJECTS_KEY = 'workshop.projects';
-const ACTIVE_KEY = 'workshop.activeProjectId';
+const ACTIVE_KEY_PREFIX = 'workshop.activeProjectId';
 const MAX_PROJECTS = 50;
 const MAX_PROJECT_TEXT = 512;
 const MAX_IDEA_TITLE = 60;
@@ -11,7 +13,9 @@ const MAX_IDEA_GOAL = 200;
 const MAX_IDEA_STEPS = 3;
 const MAX_IDEA_STEP = 140;
 
-const storageAvailable = (): boolean => typeof window !== 'undefined' && typeof localStorage !== 'undefined';
+type ProjectsByProfile = Record<ProfileId, Project[]>;
+
+const storageAvailable = (): boolean => typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
 
 const clampText = (text: string | undefined, max: number): string | undefined => {
   if (typeof text !== 'string') return text;
@@ -32,23 +36,34 @@ const clampIdea = (idea?: StationIdea): StationIdea | undefined => {
   };
 };
 
-const safeParse = (raw: string | null): Project[] => {
-  if (!raw) return [];
+const safeParse = (raw: string | null): ProjectsByProfile => {
+  if (!raw) return {};
   try {
     const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed;
+    if (Array.isArray(parsed)) {
+      return { [DEFAULT_PROFILE_ID]: parsed };
+    }
+    if (parsed && typeof parsed === 'object') {
+      const normalized: ProjectsByProfile = {};
+      for (const [key, value] of Object.entries(parsed)) {
+        if (Array.isArray(value)) {
+          normalized[key] = value;
+        }
+      }
+      return normalized;
+    }
   } catch {
-    return [];
+    // Fall back to empty storage.
   }
+  return {};
 };
 
-const persist = (projects: Project[]) => {
+const persist = (payload: ProjectsByProfile) => {
   if (!storageAvailable()) return;
   try {
-    localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+    window.localStorage.setItem(PROJECTS_KEY, JSON.stringify(payload));
   } catch {
-    // Ignore storage errors to keep the UI running.
+    // Ignore storage errors to avoid crashing the UI.
   }
 };
 
@@ -57,52 +72,63 @@ const pruneProjects = (projects: Project[]): Project[] => {
   return projects.slice(Math.max(projects.length - MAX_PROJECTS, 0));
 };
 
+const activeKeyForProfile = (profileId: ProfileId): string => `${ACTIVE_KEY_PREFIX}.${profileId}`;
+
+const sanitizeProject = (project: Project): Project => ({
+  ...project,
+  name: clampText(project.name, MAX_PROJECT_TEXT) || 'Untitled Project',
+  idea: clampIdea(project.idea),
+});
+
 export const generateProjectId = (): string => newId('project');
 
-export const loadAllProjects = async (): Promise<Project[]> => {
+export const loadProjectsForProfile = async (profileId: ProfileId): Promise<Project[]> => {
   if (!storageAvailable()) return [];
-  const raw = localStorage.getItem(PROJECTS_KEY);
-  return safeParse(raw);
+  const raw = window.localStorage.getItem(PROJECTS_KEY);
+  const bucket = safeParse(raw);
+  const subset = bucket[profileId] ?? [];
+  return subset.map((project) => ({ ...project, profileId }));
 };
 
-export const saveProject = async (project: Project): Promise<void> => {
-  const projects = await loadAllProjects();
-  const idea = clampIdea(project.idea);
-  const sanitized: Project = {
-    ...project,
-    name: clampText(project.name, MAX_PROJECT_TEXT) || 'Untitled Project',
-    idea,
-  };
-  const existingIndex = projects.findIndex((entry) => entry.id === sanitized.id);
+export const saveProject = async (profileId: ProfileId, project: Project): Promise<void> => {
+  const bucket = safeParse(storageAvailable() ? window.localStorage.getItem(PROJECTS_KEY) : null);
+  const sanitized = sanitizeProject(project);
+  const entry: Project = { ...sanitized, profileId };
+  const records = bucket[profileId] ? [...bucket[profileId]] : [];
+  const existingIndex = records.findIndex((entry) => entry.id === project.id);
   if (existingIndex >= 0) {
-    projects[existingIndex] = sanitized;
+    records[existingIndex] = entry;
   } else {
-    projects.push(sanitized);
+    records.push(entry);
   }
-  const trimmed = pruneProjects(projects);
-  persist(trimmed);
+  bucket[profileId] = pruneProjects(records);
+  persist(bucket);
 };
 
-export const deleteProject = async (id: string): Promise<void> => {
-  const projects = await loadAllProjects();
-  const remaining = projects.filter((project) => project.id !== id);
-  persist(remaining);
+export const deleteProject = async (profileId: ProfileId, id: string): Promise<void> => {
+  const bucket = safeParse(storageAvailable() ? window.localStorage.getItem(PROJECTS_KEY) : null);
+  const records = (bucket[profileId] ?? []).filter((project) => project.id !== id);
+  bucket[profileId] = records;
+  persist(bucket);
 };
 
-export const getActiveProjectId = async (): Promise<string | null> => {
+export const loadAllProjects = loadProjectsForProfile;
+
+export const getActiveProjectId = async (profileId: ProfileId): Promise<string | null> => {
   if (!storageAvailable()) return null;
-  return localStorage.getItem(ACTIVE_KEY);
+  return window.localStorage.getItem(activeKeyForProfile(profileId));
 };
 
-export const setActiveProjectId = async (id: string | null): Promise<void> => {
+export const setActiveProjectId = async (profileId: ProfileId, id: string | null): Promise<void> => {
   if (!storageAvailable()) return;
   try {
+    const key = activeKeyForProfile(profileId);
     if (id) {
-      localStorage.setItem(ACTIVE_KEY, id);
+      window.localStorage.setItem(key, id);
     } else {
-      localStorage.removeItem(ACTIVE_KEY);
+      window.localStorage.removeItem(key);
     }
   } catch {
-    // Ignore storage failures.
+    // Ignore storage errors.
   }
 };

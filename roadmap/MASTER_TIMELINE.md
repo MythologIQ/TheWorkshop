@@ -98,6 +98,13 @@ This timeline is expressed in relative sprints. A sprint can be interpreted as o
 - Create a simple site landing page explaining The Workshop to adults.  
 - Tag v1.0.0 in version control and package a release build.
 
+## Sprint 12: v1 Release Wrap
+
+- Confirm Replay Station snapshots are stable, accessible, and documented in station specs.  
+- Validate accessibility/performance improvements (keyboard focus, ARIA hints, stable WebLLM startup) on low and mid range devices.  
+- Publish `RELEASE_NOTES.md` describing the final feature set and safety posture for v1.  
+- Lock the package metadata at `1.0.0` and ensure CI stresses the `check:assets` script before tagging.
+
 ## Post v1: Future Opportunities
 
 - Add optional account layer with parental control for saving across devices.  

@@ -10,6 +10,8 @@ export interface Translation {
     broadcastDeck: string;
     timeTunnels: string;
     settings: string;
+    diagnostics: string;
+    projects: string;
   };
   stationNames: {
     idea: string;
@@ -69,6 +71,92 @@ export interface Translation {
     done: string;
     buttonLabel: string;
   };
+  ai: {
+    heading: string;
+    description: string;
+    modelLabel: string;
+    modelHint: string;
+    modeLabel: string;
+    modeHint: string;
+    tokenCap: string;
+    adaptiveToggleLabel: string;
+    adaptiveToggleHelp: string;
+  };
+  projectTools: {
+    heading: string;
+    description: string;
+    exportLabel: string;
+    importLabel: string;
+    safetyReminder: string;
+    statusNeedsProject: string;
+    statusExport: string;
+    statusImportSuccess: string;
+    statusImportFailure: string;
+  };
+  insights: {
+    heading: string;
+    description: string;
+    privacyNote: string;
+    totalProjectsLabel: string;
+    completedProjectsLabel: string;
+    reflectionLabel: string;
+    tutorialCompletionsLabel: string;
+    stationBalanceHeading: string;
+    exportLabel: string;
+    drillInLabel: string;
+    linkLabel: string;
+    linkDescription: string;
+  };
+  diagnostics: {
+    heading: string;
+    description: string;
+    sessionsLabel: string;
+    projectsLabel: string;
+    tutorialsLabel: string;
+    stationVisitsHeading: string;
+    privacyStatement: string;
+    resetButton: string;
+    toggleOn: string;
+    toggleOff: string;
+    lastResetLabel: string;
+    viewLink: string;
+  };
+  templates: {
+    heading: string;
+    description: string;
+    startButton: string;
+    existingHeading: string;
+    noProjects: string;
+    recommended: string;
+    statusApplied: string;
+  };
+  profiles: {
+    selectionHeading: string;
+    selectionDescription: string;
+    createHeading: string;
+    createNameLabel: string;
+    createColorLabel: string;
+    createColorHelp: string;
+    createButton: string;
+    continueButton: string;
+    suggestionLabel: string;
+    activeLabel: string;
+    switcherLabel: string;
+    switcherAria: string;
+    managementHeading: string;
+    managementDescription: string;
+    renameLabel: string;
+    renameHelp: string;
+    renameButton: string;
+    renameSuccess: string;
+    deleteHeading: string;
+    deleteWarning: string;
+    deleteConfirmLabel: string;
+    deletePlaceholder: string;
+    deleteButton: string;
+    deleteDisabled: string;
+    deleteSuccess: string;
+  };
 }
 
 const englishTranslation: Translation = {
@@ -81,6 +169,8 @@ const englishTranslation: Translation = {
     broadcastDeck: 'Broadcast Deck',
     timeTunnels: 'Time Tunnels',
     settings: 'Settings',
+    diagnostics: 'Diagnostics',
+    projects: 'Projects',
   },
   stationNames: {
     idea: 'Design Dock',
@@ -141,6 +231,94 @@ const englishTranslation: Translation = {
     skip: 'Skip tutorial',
     done: 'Done',
     buttonLabel: 'Try a guided mission',
+  },
+  ai: {
+    heading: 'Advanced AI settings',
+    description: 'For adults: pick a model and performance mode that match the child safe mission.',
+    modelLabel: 'Model choice',
+    modelHint: 'Each model balances friendly tone, length, and responsiveness.',
+    modeLabel: 'Performance mode',
+    modeHint: 'Balanced keeps the experience gentle while calm shortens replies and adventure stretches the story.',
+    tokenCap: 'Token budget',
+    adaptiveToggleLabel: 'Adaptive coaching',
+    adaptiveToggleHelp: 'Let the Workshop tailor prompts to the profile and recent station visits.',
+  },
+  projectTools: {
+    heading: 'Project tools',
+    description:
+      'Export a safe copy or import a file with a trusted adult so your story can travel between devices.',
+    exportLabel: 'Save a copy of this project to a file',
+    importLabel: 'Open a project file from this device',
+    safetyReminder: 'These files contain creative work. Keep them with a trusted adult and do not share widely.',
+    statusNeedsProject: 'Select a project to use these tools.',
+    statusExport: 'Preparing your download...',
+    statusImportSuccess: 'Project imported and selected.',
+    statusImportFailure: 'Unable to read that file. Try a different .workshop.json export.',
+  },
+  insights: {
+    heading: 'Adult insights',
+    description: 'High-level engagement data for adults; only summaries appear here, no detailed story text.',
+    privacyNote: 'Only counts and visit totals are shown unless an adult opens a project.',
+    totalProjectsLabel: 'Projects started',
+    completedProjectsLabel: 'Completed projects',
+    reflectionLabel: 'Reflection visits',
+    tutorialCompletionsLabel: 'Tutorial completions',
+    stationBalanceHeading: 'Station balance',
+    exportLabel: 'Download insights report',
+    drillInLabel: 'Open the projects list',
+    linkLabel: 'Adult insights dashboard',
+    linkDescription: 'View aggregated data for this profile without showing creative content.',
+  },
+  diagnostics: {
+    heading: 'Diagnostics',
+    description: 'Local metrics that stay on this device and help adults tune the Workshop.',
+    sessionsLabel: 'Session count',
+    projectsLabel: 'Projects created',
+    tutorialsLabel: 'Guided tutorials completed',
+    stationVisitsHeading: 'Station visits',
+    privacyStatement: 'This information is stored locally and is never sent anywhere.',
+    resetButton: 'Reset metrics',
+    toggleOn: 'Disable telemetry',
+    toggleOff: 'Enable telemetry',
+    lastResetLabel: 'Last reset',
+    viewLink: 'View diagnostics',
+  },
+  templates: {
+    heading: 'Start from a template',
+    description: 'Choose a friendly starter and the Workshop will open a fresh project with guided steps.',
+    startButton: 'Use this template',
+    existingHeading: 'Your projects',
+    noProjects: 'No projects yet. Create one or pick a template.',
+    recommended: 'Recommended station',
+    statusApplied: 'Ready to explore your new project.',
+  },
+  profiles: {
+    selectionHeading: 'Choose a profile',
+    selectionDescription: 'Switch between creators, pick colors, and keep each child’s work separate.',
+    createHeading: 'Add a new profile',
+    createNameLabel: 'Profile name',
+    createColorLabel: 'Accent color',
+    createColorHelp: 'Colors help you spot each profile quickly in the app.',
+    createButton: 'Create profile',
+    continueButton: 'Continue as this profile',
+    suggestionLabel: 'Profiles',
+    activeLabel: 'Active',
+    switcherLabel: 'Switch profile',
+    switcherAria: 'Open the profile selection panel',
+    managementHeading: 'Profile management',
+    managementDescription:
+      'Rename the current profile or delete unused ones. Adults keep a caution flag before removing a profile.',
+    renameLabel: 'Profile name',
+    renameHelp: 'Pick a friendly name so the child knows whose profile is active.',
+    renameButton: 'Save name',
+    renameSuccess: 'Profile name saved.',
+    deleteHeading: 'Delete profile',
+    deleteWarning: 'Deleting a profile removes its projects and telemetry. Export any stories first.',
+    deleteConfirmLabel: 'Type the profile name to confirm',
+    deletePlaceholder: 'Enter profile name',
+    deleteButton: 'Delete profile',
+    deleteDisabled: 'Default profile cannot be removed.',
+    deleteSuccess: 'Profile deleted. Switching back to another profile.',
   },
 };
 

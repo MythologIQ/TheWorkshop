@@ -6,7 +6,8 @@
       "size": "3.8B",
       "quantization": "int4",
       "priority": 1,
-      "provider": "webllm"
+      "provider": "webllm",
+      "maxTokens": 4096
     },
     {
       "id": "qwen2.5-1.5b-instruct-q",
@@ -14,7 +15,8 @@
       "size": "1.5B",
       "quantization": "int4",
       "priority": 2,
-      "provider": "webllm"
+      "provider": "webllm",
+      "maxTokens": 4096
     },
     {
       "id": "tinyllama-1.1b-chat-v1.0-q",
@@ -22,7 +24,8 @@
       "size": "1.1B",
       "quantization": "int4",
       "priority": 3,
-      "provider": "webllm"
+      "provider": "webllm",
+      "maxTokens": 2048
     }
   ]
 }

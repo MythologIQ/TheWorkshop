@@ -1,4 +1,10 @@
-import { getDefaultModel, findModel, ModelEntry } from './model_config';
+import {
+  calculateTokenCap,
+  findModelChoice,
+  getDefaultModelChoice,
+  ModelChoice,
+} from './model_config';
+import { getLLMSettings, subscribeToLLMSettings } from './llmSettingsStore';
 
 export type StreamChunk = { token: string; done: boolean };
 
@@ -8,7 +14,6 @@ type GenerateOptions = {
   systemPrompt?: string;
 };
 
-// Safety wrapper: strips disallowed content and tags obvious uncertainty.
 const DISALLOWED_PATTERNS = [/suicide/i, /self-harm/i, /violence/i, /kill/i, /weapon/i];
 const scrub = (text: string): string => {
   let cleaned = text;
@@ -24,16 +29,14 @@ const tagUncertainty = (text: string): string => {
 };
 
 export type LoadedModel = {
-  model: ModelEntry;
+  model: ModelChoice;
   generate: (prompt: string, opts?: GenerateOptions) => AsyncGenerator<StreamChunk, void, unknown>;
 };
 
-// Placeholder interface to a WebLLM engine; swap with real import when available.
 type WebLLMEngine = {
   generate: (prompt: string, opts?: GenerateOptions) => AsyncGenerator<string, void, unknown>;
 };
 
-// TODO: wire to actual WebLLM init; for now, create a stub generator.
 const createStubEngine = (): WebLLMEngine => ({
   async *generate(prompt: string) {
     const tokens = scrub(prompt)
@@ -45,9 +48,23 @@ const createStubEngine = (): WebLLMEngine => ({
   },
 });
 
+let cachedSettings = getLLMSettings();
+let cachedLoader: LoadedModel | null = null;
+
+subscribeToLLMSettings(() => {
+  cachedSettings = getLLMSettings();
+  cachedLoader = null;
+});
+
 export const loadModel = async (modelId?: string): Promise<LoadedModel> => {
-  const model = findModel(modelId || '') || getDefaultModel();
+  const specimenId = modelId ?? cachedSettings.modelId;
+  const model = findModelChoice(specimenId) ?? getDefaultModelChoice();
+  if (cachedLoader && cachedLoader.model.id === model.id) {
+    return cachedLoader;
+  }
+
   const engine = createStubEngine();
+  const tokenCap = calculateTokenCap(model.id, cachedSettings.performanceModeId);
 
   const generate = async function* (
     prompt: string,
@@ -56,8 +73,11 @@ export const loadModel = async (modelId?: string): Promise<LoadedModel> => {
     const systemPrefix = opts?.systemPrompt ? `${opts.systemPrompt}\n` : '';
     const composed = `${systemPrefix}${prompt}`;
     let count = 0;
+    const allowedTokens = opts?.maxTokens
+      ? Math.min(opts.maxTokens, tokenCap)
+      : tokenCap;
     for await (const token of engine.generate(composed, opts)) {
-      if (opts?.maxTokens && count >= opts.maxTokens) break;
+      if (count >= allowedTokens) break;
       const safeToken = tagUncertainty(scrub(token));
       yield { token: safeToken, done: false };
       count += 1;
@@ -65,5 +85,6 @@ export const loadModel = async (modelId?: string): Promise<LoadedModel> => {
     yield { token: '', done: true };
   };
 
-  return { model, generate };
+  cachedLoader = { model, generate };
+  return cachedLoader;
 };

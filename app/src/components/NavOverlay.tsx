@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { StationKey } from '../domain/project';
 import type { Translation } from '../i18n/translations';
 import { Link, useLocation } from 'react-router-dom';
@@ -7,6 +7,8 @@ import { useTranslation } from '../i18n/useTranslation';
 import { useTutorial } from '../runtime/hooks/useTutorial';
 import { TUTORIALS } from '../ui/tutorial/tutorialConfig';
 import { useTheme } from '../runtime/hooks/useTheme';
+import { recordStationVisit } from '../runtime/store/telemetryStore';
+import { useProfiles } from '../runtime/hooks/useProfiles';
 
 const navRoutes: { path: string; labelKey: keyof Translation['nav']; stationKey?: StationKey }[] = [
   { path: '/dock/idea', labelKey: 'designDock', stationKey: 'idea' },
@@ -17,16 +19,29 @@ const navRoutes: { path: string; labelKey: keyof Translation['nav']; stationKey?
   { path: '/deck/share', labelKey: 'broadcastDeck', stationKey: 'share' },
   { path: '/tunnels/replay', labelKey: 'timeTunnels', stationKey: 'replay' },
   { path: '/settings', labelKey: 'settings' },
+  { path: '/diagnostics', labelKey: 'diagnostics' },
 ];
 
-export const NavOverlay: React.FC = () => {
+type NavOverlayProps = {
+  onProfileSwitch?: () => void;
+};
+
+export const NavOverlay: React.FC<NavOverlayProps> = ({ onProfileSwitch }) => {
   const location = useLocation();
   const translation = useTranslation();
   const { preferences } = usePreferences();
   const { tutorialState } = useTutorial();
   const { theme } = useTheme();
+  const { activeProfile } = useProfiles();
   const currentStep =
     tutorialState.activeTutorialId ? TUTORIALS[tutorialState.activeTutorialId]?.[tutorialState.currentStepIndex] : undefined;
+
+  useEffect(() => {
+    const match = navRoutes.find((route) => route.path === location.pathname);
+    if (match?.stationKey) {
+      recordStationVisit(match.stationKey);
+    }
+  }, [location.pathname]);
 
   return (
     <nav className={`${theme.palette.nav} ${theme.palette.text}`} aria-label="Station navigation">
@@ -58,6 +73,21 @@ export const NavOverlay: React.FC = () => {
             </li>
           );
         })}
+        <li>
+          <button
+            type="button"
+            onClick={onProfileSwitch}
+            className={`inline-flex items-center gap-2 rounded-2xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.3em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-500 ${theme.palette.border} bg-white text-slate-600 hover:border-fuchsia-400 hover:text-slate-900`}
+            aria-label={translation.profiles.switcherAria}
+          >
+            <span
+              className="inline-flex h-3 w-3 rounded-full border border-slate-300"
+              style={{ backgroundColor: activeProfile?.color ?? '#CBD5F5' }}
+              aria-hidden="true"
+            />
+            {translation.profiles.switcherLabel}
+          </button>
+        </li>
       </ul>
     </nav>
   );
