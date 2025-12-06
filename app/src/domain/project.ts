@@ -3,6 +3,17 @@ import { Reflection } from './reflection';
 import { TestResult } from './test';
 import { ArchiveEntry } from './archive';
 
+export interface TestSession {
+  id: string;
+  createdAt: string;
+  question: string;
+  findings: string[];
+}
+
+export interface TestSlice {
+  sessions: TestSession[];
+}
+
 export type ProjectStatus = 'draft' | 'in_progress' | 'paused' | 'completed' | 'archived';
 export type StationKey = 'idea' | 'build' | 'test' | 'memory' | 'reflect' | 'share' | 'replay';
 
@@ -25,6 +36,7 @@ export interface Project {
   tests: TestResult[];
   archives: ArchiveEntry[];
   tags?: string[];
+  test?: TestSlice;
   createdAt: string;
   updatedAt: string;
 }
