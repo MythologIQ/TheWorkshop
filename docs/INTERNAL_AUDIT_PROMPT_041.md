@@ -89,6 +89,7 @@
 - **Working tree:** clean.
 - **Checks:** `npm run check:assets`, `npm run lint`, `npm run build`, `npm test` all pass.
 - **Known issues/next focus:** none flagged; next prompt (042) can proceed from this stable baseline.
+- **Next prompt recommendation:** begin `Prompt 042` once available; no immediate blockers—focus can shift to the next queued feature from the codex sequence.
 
 ### Step 8 – Self evaluation
 This prompt achieved its consolidation goal: diagnostics, AI, telemetry, and documentation from prompts 025-040 are committed together, tests/checks pass, and the audit log details the work. No major uncertainties remain, though future prompts may revisit detailed documentation or new features as they arise.
