@@ -101,6 +101,8 @@ const englishTranslation: Translation = {
     settingsAccessibilityHelp: 'Track the Workshop using extra labels or a larger base font.',
     settingsExtraLabels: 'Show extra helper labels',
     settingsLargerFont: 'Use a larger base font',
+    settingsTheme: 'Theme & skins',
+    settingsThemeHelp: 'Pick a skin to change colors, icons, and background flair while the stations stay the same.',
     timeTunnelsTitle: 'Replay Station',
     timeTunnelsSubtitle: 'Save a snapshot whenever you have a moment worth remembering.',
     snapshotsTitle: 'Snapshots',

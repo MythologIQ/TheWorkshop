@@ -6,6 +6,7 @@ import { usePreferences } from '../runtime/context/preferencesContext';
 import { useTranslation } from '../i18n/useTranslation';
 import { useTutorial } from '../runtime/hooks/useTutorial';
 import { TUTORIALS } from '../ui/tutorial/tutorialConfig';
+import { useTheme } from '../runtime/hooks/useTheme';
 
 const navRoutes: { path: string; labelKey: keyof Translation['nav']; stationKey?: StationKey }[] = [
   { path: '/dock/idea', labelKey: 'designDock', stationKey: 'idea' },
@@ -23,11 +24,12 @@ export const NavOverlay: React.FC = () => {
   const translation = useTranslation();
   const { preferences } = usePreferences();
   const { tutorialState } = useTutorial();
+  const { theme } = useTheme();
   const currentStep =
     tutorialState.activeTutorialId ? TUTORIALS[tutorialState.activeTutorialId]?.[tutorialState.currentStepIndex] : undefined;
 
   return (
-    <nav className="bg-slate-100" aria-label="Station navigation">
+    <nav className={`${theme.palette.nav} ${theme.palette.text}`} aria-label="Station navigation">
       <ul className="mx-auto flex max-w-5xl flex-wrap gap-2 px-3 py-3">
         {navRoutes.map((route) => {
           const label = translation.nav[route.labelKey];
@@ -40,11 +42,9 @@ export const NavOverlay: React.FC = () => {
               <Link
                 to={route.path}
                 id={linkId}
-                className={`inline-flex flex-col items-center gap-1 rounded-2xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.3em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-500 ${
-                  isActive
-                    ? 'border-fuchsia-500 bg-slate-900 text-white'
-                    : 'border-slate-300 bg-white text-slate-600 hover:border-fuchsia-400 hover:text-slate-900'
-                } ${isTutorialHighlight ? 'ring-2 ring-fuchsia-400 ring-offset-2' : ''}`}
+                className={`inline-flex flex-col items-center gap-1 rounded-2xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.3em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-500 ${theme.palette.border} ${
+                  isActive ? `${theme.palette.activeBg} ${theme.palette.activeText}` : `bg-white text-slate-600 hover:border-fuchsia-400 hover:text-slate-900`
+                } ${isTutorialHighlight ? `ring-2 ${theme.palette.accent.replace('text-', 'ring-')} ring-offset-2` : ''}`}
                 aria-current={isActive ? 'page' : undefined}
               >
                 {label}

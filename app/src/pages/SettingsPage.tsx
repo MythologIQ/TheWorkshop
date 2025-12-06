@@ -1,6 +1,8 @@
 import React from 'react';
 import { usePreferences } from '../runtime/context/preferencesContext';
+import { useTheme } from '../runtime/hooks/useTheme';
 import { useTranslation } from '../i18n/useTranslation';
+import { THEMES } from '../domain/theme';
 import type { Locale } from '../i18n/types';
 
 const languageOptions: { value: Locale; label: string; disabled?: boolean }[] = [
@@ -11,6 +13,7 @@ const languageOptions: { value: Locale; label: string; disabled?: boolean }[] = 
 
 const SettingsPage: React.FC = () => {
   const { preferences, updatePreferences } = usePreferences();
+  const { setTheme, themeId } = useTheme();
   const translation = useTranslation();
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -80,6 +83,45 @@ const SettingsPage: React.FC = () => {
               />
               {translation.headings.settingsLargerFont}
             </label>
+          </div>
+        </fieldset>
+        <fieldset
+          className="space-y-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4"
+          aria-describedby="theme-help"
+        >
+          <legend className="text-sm font-semibold uppercase tracking-[0.4em] text-slate-500">
+            {translation.headings.settingsTheme}
+          </legend>
+          <p id="theme-help" className="text-xs text-slate-500">
+            {translation.headings.settingsThemeHelp}
+          </p>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {Object.values(THEMES).map((themeOption) => (
+              <button
+                key={themeOption.id}
+                type="button"
+                onClick={() => setTheme(themeOption.id)}
+                className={`flex flex-col gap-2 rounded-2xl border px-3 py-4 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-500 ${
+                  themeId === themeOption.id
+                    ? 'border-fuchsia-400 bg-white/70'
+                    : 'border-slate-200 bg-white/40 hover:border-slate-400 hover:bg-white/60'
+                }`}
+                aria-pressed={themeId === themeOption.id}
+              >
+                <div
+                  className="h-20 rounded-2xl border"
+                  style={{
+                    backgroundImage: themeOption.backgroundGradient,
+                    borderColor:
+                      themeId === themeOption.id ? 'rgba(244,114,182,0.5)' : 'rgba(148,163,184,0.35)',
+                  }}
+                />
+                <div className="space-y-1 text-sm">
+                  <p className="font-semibold text-slate-900">{themeOption.displayName}</p>
+                  <p className="text-xs text-slate-500">{themeOption.iconSetId} icons</p>
+                </div>
+              </button>
+            ))}
           </div>
         </fieldset>
       </form>

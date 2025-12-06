@@ -11,14 +11,20 @@ import SettingsPage from './pages/SettingsPage';
 import { NavOverlay } from './components/NavOverlay';
 import { TutorialOverlay } from './ui/tutorial/TutorialOverlay';
 import { usePreferences } from './runtime/context/preferencesContext';
+import { useTheme } from './runtime/hooks/useTheme';
 
 const App: React.FC = () => {
   const { preferences } = usePreferences();
+  const { theme } = useTheme();
   const fontClass = preferences.largerText ? 'text-lg' : 'text-base';
+  const backgroundStyle = {
+    backgroundImage: theme.backgroundGradient,
+  };
 
   return (
     <div
-      className={`${fontClass} min-h-screen bg-white text-slate-900`}
+      className={`${fontClass} min-h-screen ${theme.palette.body} ${theme.palette.text}`}
+      style={backgroundStyle}
       data-larger-font={preferences.largerText ? 'true' : 'false'}
     >
       <NavOverlay />
