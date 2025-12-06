@@ -3,6 +3,29 @@ import { Reflection } from './reflection';
 import { TestResult } from './test';
 import { ArchiveEntry } from './archive';
 
+export interface MemoryEntry {
+  id: string;
+  createdAt: string;
+  proudOf: string;
+  lesson: string;
+  nextTime: string;
+}
+
+export interface MemorySlice {
+  entries: MemoryEntry[];
+}
+
+export interface ReflectSnapshot {
+  id: string;
+  createdAt: string;
+  tags: string[];
+  notes: string;
+}
+
+export interface ReflectSlice {
+  snapshots: ReflectSnapshot[];
+}
+
 export interface TestSession {
   id: string;
   createdAt: string;
@@ -37,6 +60,8 @@ export interface Project {
   archives: ArchiveEntry[];
   tags?: string[];
   test?: TestSlice;
+  memory?: MemorySlice;
+  reflect?: ReflectSlice;
   createdAt: string;
   updatedAt: string;
 }
