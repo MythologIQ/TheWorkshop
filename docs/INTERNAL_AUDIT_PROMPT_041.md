@@ -1,7 +1,7 @@
-- [ ] Working tree clean
-- [ ] All checks passing
-- [ ] Docs aligned with behavior
-- [ ] Next prompt entry point identified
+- [x] Working tree clean
+- [x] All checks passing
+- [x] Docs aligned with behavior
+- [x] Next prompt entry point identified (Prompt 042)
 
 ## Intro
 - **Goal:** consolidate prompts 025-040 and stabilize the Workshop repo so future prompts can run predictably.
@@ -65,3 +65,30 @@
 ### Step 6 – Self evaluation
 - Working tree is clean after the consolidation commit.
 - The commit aligns with the consolidation strategy (Group A/B/C combined into one cohesive snapshot).
+
+## Documentation alignment check
+- `docs/user/WORKSHOP_OVERVIEW.md` – still reflects the station layout and mission-centric flow; no contradictions seen.
+- `docs/user/GETTING_STARTED_KIDS.md` – focuses on safe exploration and station steps, which matches the current UI.
+- `docs/user/GETTING_STARTED_ADULTS.md` – recommends adult-guided setup and preference toggles that exist.
+- `docs/user/EDUCATOR_GUIDE.md` – encourages reflection and diagnostics, consistent with telemetry and insight features.
+- `docs/user/SAFETY_AND_PRIVACY_SUMMARY.md` – describes on-device telemetry and the Safety Contract; consistent with current data practices.
+- `docs/ARCHITECTURE_OVERVIEW.md` – outlines the client-first React/Vite structure, which matches the repository.
+- `docs/STATION_LIFECYCLE.md` – explains the station progression from idea to replay, reflecting the routed pages.
+- `docs/EXTENSION_POINTS.md` – lists runtime hooks and stores we now maintain; aligns with current structure.
+- `docs/AI_BEHAVIOR_AND_SAFETY.md` – mentions persona prompts and safety filters that have been implemented.
+- `docs/MULTI_PROFILE_SPEC.md` – details profile persistence and telemetry isolation, matching the store updates.
+- `docs/DEPLOYMENT_GUIDE.md` – describes building the Vite app and deploying assets (still accurate).
+- `docs/HOSTING_OPTIONS.md` – lists hosting strategies compatible with the current build/output.
+
+### Step 7 – Self evaluation
+- No clear mismatches were found during this audit; documentation broadly reflects implemented features.
+- Assumed that the newly added user guides are intentional and aligned with the consolidated behavior.
+
+## Ready for next prompt
+- **Current branch:** `prompt-041-consolidation` (ahead of `prompt-025` by two commits).
+- **Working tree:** clean.
+- **Checks:** `npm run check:assets`, `npm run lint`, `npm run build`, `npm test` all pass.
+- **Known issues/next focus:** none flagged; next prompt (042) can proceed from this stable baseline.
+
+### Step 8 – Self evaluation
+This prompt achieved its consolidation goal: diagnostics, AI, telemetry, and documentation from prompts 025-040 are committed together, tests/checks pass, and the audit log details the work. No major uncertainties remain, though future prompts may revisit detailed documentation or new features as they arise.
