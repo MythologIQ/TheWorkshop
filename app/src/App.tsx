@@ -9,6 +9,7 @@ import BroadcastDeckPage from './pages/BroadcastDeck';
 import ReplayStationPage from './stations/replay/ReplayStationPage';
 import SettingsPage from './pages/SettingsPage';
 import { NavOverlay } from './components/NavOverlay';
+import { TutorialOverlay } from './ui/tutorial/TutorialOverlay';
 import { usePreferences } from './runtime/context/preferencesContext';
 
 const App: React.FC = () => {
@@ -21,6 +22,7 @@ const App: React.FC = () => {
       data-larger-font={preferences.largerText ? 'true' : 'false'}
     >
       <NavOverlay />
+      <TutorialOverlay />
       <main className="px-4 py-6" role="main" aria-label="Station content">
         <Routes>
           <Route path="/dock/idea" element={<IdeaDock />} />

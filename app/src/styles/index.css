@@ -5,3 +5,10 @@
 body {
   margin: 0;
 }
+
+.tutorial-highlight {
+  box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.5);
+  border-radius: 999px;
+  position: relative;
+  z-index: 50;
+}

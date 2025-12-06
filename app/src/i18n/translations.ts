@@ -60,6 +60,15 @@ export interface Translation {
     snapshotCap: string;
     replayReminder: string;
   };
+  tutorial: {
+    title: string;
+    stationLabel: string;
+    next: string;
+    back: string;
+    skip: string;
+    done: string;
+    buttonLabel: string;
+  };
 }
 
 const englishTranslation: Translation = {
@@ -121,6 +130,15 @@ const englishTranslation: Translation = {
     timeTunnels: 'Keep this area as a gentle time tunnel of earlier project versions.',
     snapshotCap: 'Snapshots are capped at 10 entries and store only the essentials.',
     replayReminder: 'Replay is about learning from past ideas, not regret. Every action is reversible.',
+  },
+  tutorial: {
+    title: 'Guided mission',
+    stationLabel: 'Next stop:',
+    next: 'Next',
+    back: 'Back',
+    skip: 'Skip tutorial',
+    done: 'Done',
+    buttonLabel: 'Try a guided mission',
   },
 };
 
