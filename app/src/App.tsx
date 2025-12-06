@@ -5,7 +5,7 @@ import AssemblyBayPage from './pages/AssemblyBay';
 import DiagnosticsCorridorPage from './pages/DiagnosticsCorridor';
 import StellarArchivePage from './pages/StellarArchive';
 import OrbiterBridgePage from './pages/OrbiterBridge';
-import BroadcastDeckPage from './pages/BroadcastDeck';
+import ShareStationPage from './stations/share/ShareStationPage';
 import TimeTunnelsPage from './pages/TimeTunnels';
 import { NavOverlay } from './components/NavOverlay';
 
@@ -18,7 +18,7 @@ const App: React.FC = () => (
       <Route path="/corridor/test" element={<DiagnosticsCorridorPage />} />
       <Route path="/vault/memory" element={<StellarArchivePage />} />
       <Route path="/bridge/reflect" element={<OrbiterBridgePage />} />
-      <Route path="/deck/share" element={<BroadcastDeckPage />} />
+      <Route path="/deck/share" element={<ShareStationPage />} />
       <Route path="/tunnels/replay" element={<TimeTunnelsPage />} />
       <Route path="*" element={<IdeaDock />} />
     </Routes>
