@@ -4,13 +4,16 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { AIProvider } from './runtime/ai/AIProvider';
 import './styles/index.css';
+import { PreferencesProvider } from './runtime/context/preferencesContext';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <AIProvider>
+    <PreferencesProvider>
+      <AIProvider>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </AIProvider>
+      </AIProvider>
+    </PreferencesProvider>
   </React.StrictMode>,
 );
