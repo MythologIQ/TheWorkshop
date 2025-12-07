@@ -9,6 +9,7 @@ This document explains how AI calls are wired today and how the Safety Contract 
 3. `webllm_loader.ts` wraps a simple `WebLLMEngine` stub that scrubs disallowed patterns (`/suicide/i`, `/violence/i`, etc.), enforces a `tokenCap` via `calculateTokenCap`, and tags uncertain text before yielding tokens.
 4. `AIProvider` also prefixes every prompt with the Safety Contract reminder (`"Follow Workshop safety."`) so every station request reiterates the same guardrails.
 5. `AIProvider` exposes `streamWithPersona`, which composes persona prompts from `app/src/runtime/ai/ai_personas.ts` (see `docs/AI_PERSONAS_SPEC.md`) so each station receives tone/detail/action cues layered on top of the standard safety reminders.
+6. The new safety pipeline (`docs/AI_SAFETY_PIPELINE.md`) routes every station through the child-mode governor and deterministic harness before token streams reach the UI, keeping guardrails centralized and enabling friendly fallbacks.
 
 ## Safety enforcement
 

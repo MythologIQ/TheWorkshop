@@ -1,13 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { StationKey } from '../../domain/project';
 import { loadModel, LoadedModel, StreamChunk } from '../llm/webllm_loader';
-import {
-  ModelChoice,
-  PerformanceModeId,
-  calculateTokenCap,
-  findModelChoice,
-  getDefaultModelChoice,
-} from '../llm/model_config';
+import { ModelChoice, PerformanceModeId, findModelChoice, getDefaultModelChoice } from '../llm/model_config';
 import { setLLMModelChoice, setLLMPerformanceMode } from '../llm/llmSettingsStore';
 import { useLLMSettings } from '../llm/useLLMSettings';
 import { usePreferences } from '../context/preferencesContext';
@@ -15,6 +9,7 @@ import { getActiveProfile } from '../store/profileStore';
 import { getTelemetryState } from '../store/telemetryStore';
 import { buildAdaptiveAdjustments } from './adaptive_engine';
 import { buildPersonaSystemPrompt, getPersonaForStation } from './ai_personas';
+import { safeStream, SafeAIRequest } from './safeAIHarness';
 
 type GenerateOptions = {
   maxTokens?: number;
@@ -41,20 +36,6 @@ type PersonaStreamArgs = {
   stationKey?: StationKey;
   action?: string;
   opts?: GenerateOptions;
-};
-
-const scrub = (text: string): string => {
-  const DISALLOWED_PATTERNS = [/suicide/i, /self-harm/i, /violence/i, /kill/i, /weapon/i];
-  let cleaned = text;
-  DISALLOWED_PATTERNS.forEach((pat) => {
-    cleaned = cleaned.replace(pat, '[filtered]');
-  });
-  return cleaned;
-};
-
-const tagUncertainty = (text: string): string => {
-  const uncertain = /\b(maybe|perhaps|not sure|guess)\b/i.test(text);
-  return uncertain ? `${text} (?)` : text;
 };
 
 export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -107,22 +88,18 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   );
 
   const stream = useMemo(
-    () => async function* (prompt: string, opts?: GenerateOptions): AsyncGenerator<StreamChunk, void, unknown> {
-      const active = await ensureLoader();
-      const tokenCap = calculateTokenCap(active.model.id, settings.performanceModeId);
-      const systemPrefix = opts?.systemPrompt ? `${opts.systemPrompt}\n` : '';
-      const composed = `${systemPrefix}${prompt}`;
-      let count = 0;
-      const allowedTokens = opts?.maxTokens ? Math.min(opts.maxTokens, tokenCap) : tokenCap;
-      for await (const chunk of active.generate(composed, opts)) {
-        if (count >= allowedTokens) break;
-        const safeToken = tagUncertainty(scrub(chunk.token));
-        yield { token: safeToken, done: chunk.done };
-        count += 1;
-      }
-      yield { token: '', done: true };
-    },
-    [ensureLoader, settings.performanceModeId],
+    () =>
+      async function* (prompt: string, opts?: GenerateOptions): AsyncGenerator<StreamChunk, void, unknown> {
+        const active = await ensureLoader();
+        const request: SafeAIRequest = {
+          prompt,
+          systemPrompt: opts?.systemPrompt,
+          maxTokens: opts?.maxTokens,
+          temperature: opts?.temperature,
+        };
+        yield* safeStream(active, request);
+      },
+    [ensureLoader],
   );
 
   const streamWithPersona = useMemo(
@@ -142,9 +119,6 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
               telemetry: getTelemetryState(),
             })
           : undefined;
-        const systemPromptPieces = [opts?.systemPrompt, personaPrompt, adjustments?.systemPromptAddition].filter(
-          Boolean,
-        );
         const mergedOpts: GenerateOptions = { ...(opts ?? {}) };
         if (adjustments?.maxTokens !== undefined && mergedOpts.maxTokens == null) {
           mergedOpts.maxTokens = adjustments.maxTokens;
@@ -152,10 +126,22 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
         if (adjustments?.temperature !== undefined && mergedOpts.temperature == null) {
           mergedOpts.temperature = adjustments.temperature;
         }
+        const systemPromptPieces = [opts?.systemPrompt, personaPrompt, adjustments?.systemPromptAddition].filter(
+          Boolean,
+        );
         const combinedSystemPrompt = systemPromptPieces.join('\n\n');
-        yield* stream(userPrompt, { ...mergedOpts, systemPrompt: combinedSystemPrompt });
+        const active = await ensureLoader();
+        const request: SafeAIRequest = {
+          prompt: userPrompt,
+          stationKey,
+          intent: action,
+          systemPrompt: combinedSystemPrompt,
+          maxTokens: mergedOpts.maxTokens,
+          temperature: mergedOpts.temperature,
+        };
+        yield* safeStream(active, request);
       },
-    [adaptiveEnabled, stream],
+    [adaptiveEnabled, ensureLoader],
   );
 
   const value = useMemo(
