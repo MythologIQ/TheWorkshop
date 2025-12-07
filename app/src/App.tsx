@@ -7,6 +7,8 @@ import StellarArchivePage from './pages/StellarArchive';
 import OrbiterBridgePage from './pages/OrbiterBridge';
 import BroadcastDeckPage from './pages/BroadcastDeck';
 import TimeTunnelsPage from './pages/TimeTunnels';
+import DiagnosticsPage from './pages/DiagnosticsPage';
+import AdultInsightsPage from './pages/AdultInsightsPage';
 import { NavOverlay } from './components/NavOverlay';
 
 const App: React.FC = () => (
@@ -20,6 +22,8 @@ const App: React.FC = () => (
       <Route path="/bridge/reflect" element={<OrbiterBridgePage />} />
       <Route path="/deck/share" element={<BroadcastDeckPage />} />
       <Route path="/tunnels/replay" element={<TimeTunnelsPage />} />
+      <Route path="/diagnostics" element={<DiagnosticsPage />} />
+      <Route path="/insights" element={<AdultInsightsPage />} />
       <Route path="*" element={<IdeaDock />} />
     </Routes>
   </div>

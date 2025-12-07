@@ -1,7 +1,7 @@
-# The Workshop Atlas
+# MythologIQ Creation Lab Atlas
 
 ## Introduction – A starship for young creators
-The Workshop is imagined as a starship shipyard where each key step of a project happens in a themed Station (room). Kids move station to station to turn an idea into reality, guided by the learning loop: **Ask → Reflect → Plan → Act → Review**. The crew:
+MythologIQ Creation Lab is imagined as a starship shipyard where each key step of a project happens in a themed Station (room). Kids move station to station to turn an idea into reality, guided by the learning loop: **Ask → Reflect → Plan → Act → Review**. The crew:
 - Design Dock (Idea Station)
 - Assembly Bay (Build Station)
 - Diagnostics Corridor (Test Station)

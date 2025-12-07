@@ -1,6 +1,6 @@
 # Safety Contract
 
-The Safety Contract is the always-on agreement every Station follows to keep The Workshop safe, kind, and age-appropriate. It defines what content is off-limits, how to respond when something unsafe arises, and the tone we maintain.
+The Safety Contract is the always-on agreement every Station follows to keep MythologIQ Creation Lab safe, kind, and age-appropriate. It defines what content is off-limits, how to respond when something unsafe arises, and the tone we maintain.
 
 ## Prohibited content
 - Self-harm or suicide.
